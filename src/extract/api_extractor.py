@@ -11,21 +11,22 @@ class DefiLlamaAPIExtractor:
     def __init__(self, base_url: str = "https://api.llama.fi"):
         self.base_url = base_url
         self.session = requests.Session()
-
         self.timeout = 30
 
-    def _make_request(self, endpoint: str, method: str = "GET", params: Optional[Dict] = None) -> Dict:
+    def _make_request(self, endpoint: str, method: Optional[str] = None, params: Optional[Dict] = None) -> Dict:
         url = f"{self.base_url}/{endpoint}"
-
-        res = self.session.request(
-            method=method,
+                
+        res = self.session.get(
             url=url,
             params=params,
             timeout=self.timeout
         )
 
-        res.raise_for_status()
-        return res.json()
+        if res.status_code == 200:
+            return res.json()
+        else:
+            return {500:"error making request"}
+        
 
     # https://api.llama.fi/summary/dexs/hyperswap?excludeTotalDataChart=true&excludeTotalDataChartBreakdown=true&dataType=dailyVolume
     def get_dex_vol_summary(self, protocol: str, exclude_total_data_chart: bool = True, exlcude_total_data_chart_breakdown: bool = None, data_type: str = "dailyVolume"):
