@@ -27,8 +27,6 @@ class DefiLlamaAPIExtractor:
         else:
             return {500:"error making request"}
         
-
-    # https://api.llama.fi/summary/dexs/hyperswap?excludeTotalDataChart=true&excludeTotalDataChartBreakdown=true&dataType=dailyVolume
     def get_dex_vol_summary(self, protocol: str, exclude_total_data_chart: bool = True, exlcude_total_data_chart_breakdown: bool = None, data_type: str = "dailyVolume"):
         endpoint = f"summary/dexs/{protocol}"
 
@@ -39,3 +37,11 @@ class DefiLlamaAPIExtractor:
         }
 
         return self._make_request(endpoint, params=params)
+
+    def get_historical_protocol_tvl(self, protocol: str):
+        endpoint = f"protocol/{protocol}"
+        return self._make_request(endpoint=endpoint)
+
+    def get_current_protocol_tvl(self, protocol: str):
+        endpoint = f"tvl/{protocol}"
+        return self._make_request(endpoint=endpoint)
