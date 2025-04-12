@@ -13,8 +13,8 @@
         end
 
         subgraph Sources
-            API[Third-party API]
-            WEB[Website Scraping]
+            API[Defi Llama API]
+            WEB[Blockscout HL API]
         end
 
         subgraph Database
@@ -23,7 +23,7 @@
 
         CRON --> |Schedule Execution| ETL
         EXTRACT --> |API Calls| API
-        EXTRACT --> |Web Scraping| WEB
+        EXTRACT --> |API Calls| WEB
         LOAD --> PG
 
         classDef cron fill:#339cff,stroke:#339cff,stroke-width:2px,color:#333
