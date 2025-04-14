@@ -11,14 +11,13 @@ class DefiLlamaAPIExtractor:
     This class provides methods for accessing various endpoints of the 
     Defi Llama API and consolidates all data into a single payload.
     """
-    def __init__(self, base_url: str = "https://api.llama.fi", raw_data_dir: str = "../../data/raw_json"):
+    def __init__(self, base_url: str = "https://api.llama.fi", raw_data_dir: str = "../../data/dl_raw_json"):
         self.base_url = base_url
         self.session = requests.Session()
         self.timeout = 1
         self.raw_data_dir = raw_data_dir
 
         # create raw_json dir if !exist
-
         self.raw_data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), raw_data_dir))
         os.makedirs(self.raw_data_dir, exist_ok=True) # set to true to avoid errors if it exists
 
@@ -48,7 +47,7 @@ class DefiLlamaAPIExtractor:
             json.dump(payload, f, indent=2)
         return filepath
             
-    def consolidate_protocol_metrics(self, protocol: str) -> Dict:
+    def collect_protocol_metrics(self, protocol: str) -> Dict:
         protocol_data = {
             "protocol_name": protocol,
             "raw_data": {},
