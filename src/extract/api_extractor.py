@@ -60,7 +60,7 @@ class DefiLlamaAPIExtractor:
         metrics = [
             ("protocol_volume", self.get_dex_vol_summary, {"protocol":protocol}),
             ("current_tvl", self.get_current_protocol_tvl, {"protocol":protocol}),
-            ("historical_tvl", self.get_historical_chain_tvl, {"protocol":protocol})
+            ("historical_tvl", self.get_historical_protocol_tvl, {"protocol":protocol})
         ]
 
         for metric, method, params in metrics:
