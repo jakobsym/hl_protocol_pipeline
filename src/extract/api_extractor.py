@@ -55,13 +55,12 @@ class DefiLlamaAPIExtractor:
         for metric, method, params in metrics:
             try:
                 time.sleep(self.timeout)
-
                 data = method(**params)
-
+                
             except Exception as e:
                 protocol_data["errors"].append({"metric": metric, "error": str(e)})
 
-
+        return protocol_data
 
     """ 
     Returns (24h vol, 48h-24h vol, 7d vol, all-time vol)
