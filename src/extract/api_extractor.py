@@ -11,7 +11,7 @@ class DefiLlamaAPIExtractor:
     This class provides methods for accessing various endpoints of the 
     Defi Llama API and consolidates all data into a single payload.
     """
-    def __init__(self, base_url: str = "https://api.llama.fi", raw_data_dir: str = "../../data/dl_raw_json"):
+    def __init__(self, base_url: str = "https://api.llama.fi", raw_data_dir: str = "../../data/defi_llama_raw_json"):
         self.base_url = base_url
         self.session = requests.Session()
         self.timeout = 1
@@ -107,8 +107,7 @@ class DefiLlamaAPIExtractor:
         endpoint = f"overview/fees/{blockchain}"
         return self._make_request(endpoint=endpoint)
     
-    # return dictionary of all protocols and assciated daily fees
-    # or is this done in transmforation stage?
+    # returns all protocols on `blockchain` with their daily fees
     def get_protocols_daily_fees(self, blockchain: str, exclude_total_data_chart: bool = True, exlcude_total_data_chart_breakdown: bool = None, data_type: str = "dailyFees"):
         endpoint = f"overview/fees/{blockchain}"
         params = {
@@ -117,11 +116,8 @@ class DefiLlamaAPIExtractor:
             "dataType": data_type
         }
         return self._make_request(endpoint=endpoint, params=params)
-        
-    # def get_protocols_total_fees() -> Dict:
-
-    # def get_protocols_total_revenue() -> Dict:
-        
+            
+    # returns all protocols on `blockchain` with their daily fees
     def get_protocols_daily_revenue(self, blockchain: str, exclude_total_data_chart: bool = True, exlcude_total_data_chart_breakdown: bool = None, data_type: str = "dailyRevenue") -> Dict:
         protocol_daily_revenue = {}
         endpoint = f"overview/fees/{blockchain}"

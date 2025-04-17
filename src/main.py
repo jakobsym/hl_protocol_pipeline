@@ -1,5 +1,5 @@
 from extract.api_extractor import DefiLlamaAPIExtractor
-# from transform.dl_api_transformer import DefiLlamaJsonTransformer
+from transform.dl_api_transformer import DefiLlamaJsonTransformer
 
 # TODO: 'valantis' and 'kittenswap-finance' are not listed within Defi llama dexs
 def main():
@@ -13,7 +13,7 @@ def main():
         try:
             # extract raw data
             print(f"    Extracting {protocol} data...")
-            protocol_metric = dl_api_extractor.collect_protocol_metrics(protocol)
+            protocol_metrics = dl_api_extractor.collect_protocol_metrics(protocol)
 
             # transform raw data
             # transformed_data = dl_json_transformer.transform_collected_data(protocol_metric)
