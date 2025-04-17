@@ -137,8 +137,3 @@ class DefiLlamaAPIExtractor:
         return self._make_request(endpoint=endpoint)
 
     
-
-"""
-class BlockscoutAPIExtractor:
-    #TODO: TBD
-"""
