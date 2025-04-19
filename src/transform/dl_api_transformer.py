@@ -38,9 +38,13 @@ class DefiLlamaJsonTransformer:
             "7d_volume": raw_data["raw_data"]["protcol_volume"]["total7d"],
             "all_time_volume": raw_data["raw_data"]["protcol_volume"]["totalAllTime"]
         }
-
+    
+    # creates dictionary of all tokens a DEX currently holds denominated in USD
     def tokens_in_usd_value(self, raw_data: Dict) -> Dict:
+        return {
+            "protocol_name": raw_data["protocol_name"],
+            "current_holdings_usd": raw_data["raw_data"]["chainTvls"]["Hyperliquid"]["tvl"]["tokensInUsd"][-1]
+        }
         
-    #TODO: Transform raw collection of data
-    #def transform_collected_data(self, raw_payload: Dict) -> Dict:
+    
         

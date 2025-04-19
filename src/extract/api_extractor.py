@@ -117,7 +117,7 @@ class DefiLlamaAPIExtractor:
         }
         return self._make_request(endpoint=endpoint, params=params)
             
-    # returns all protocols on `blockchain` with their daily fees
+    # returns all protocols on `blockchain` with their daily revenue
     def get_protocols_daily_revenue(self, blockchain: str, exclude_total_data_chart: bool = True, exlcude_total_data_chart_breakdown: bool = None, data_type: str = "dailyRevenue") -> Dict:
         protocol_daily_revenue = {}
         endpoint = f"overview/fees/{blockchain}"

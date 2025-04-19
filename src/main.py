@@ -3,7 +3,7 @@ from transform.dl_api_transformer import DefiLlamaJsonTransformer
 
 # TODO: 'valantis' and 'kittenswap-finance' are not listed within Defi llama dexs
 def main():
-    hyperliquid_dexs = ["hyperswap", "valantis", "kittenswap-finance"]
+    hyperliquid_dexs = ["hyperswap", "valantis", "kittenswap-finance", "laminar"]
     # blockchains = ["hyperliquid l1"]
     
     dl_api_extractor = DefiLlamaAPIExtractor()
