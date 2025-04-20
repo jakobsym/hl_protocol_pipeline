@@ -16,10 +16,12 @@ def main():
             protocol_metrics = dl_api_extractor.collect_protocol_metrics(protocol)
 
             # transform raw data
-            transformed_data = {
-                "tvl": dl_json_transformer.transform_protocol_tvl(protocol_metrics),
-            }        
-            print(transformed_data)
+            metrics = dl_json_transformer.tokens_in_usd_value(protocol_metrics)
+            print(metrics)
+            #transformed_metrics = dl_json_transformer.transform_protocol_metrics(protocol_metrics)    
+            #print(transformed_metrics)
+
+
             # load transformed data into storage
         except Exception as e:
             print(f"  ERROR processing {protocol}: {str(e)}")
