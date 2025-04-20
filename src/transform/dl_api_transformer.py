@@ -15,7 +15,8 @@ class DefiLlamaJsonTransformer:
         self.transformed_data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), transformed_data_dir))
         os.makedirs(self.transformed_data_dir, exist_ok=True)
 
-    def transform_tvl(self, raw_data: Dict) -> Dict:
+    # creates dictionary of current TVL in USD for a protocol
+    def transform_protocol_tvl(self, raw_data: Dict) -> Dict:
         return {
             "protocol_name": raw_data["protocol_name"],
             "current_tvl": raw_data["raw_data"]["current_tvl"],
@@ -23,14 +24,16 @@ class DefiLlamaJsonTransformer:
 
         }
 
+    # creates a dictionary of the total amount of liquidity in USD a protocol has
     def current_liquidity_in_usd(self, raw_data: Dict) -> Dict:
         return {
             "protocol_name": raw_data["protocol_name"],
-            "total_liquidity_usd": raw_data["raw_data"]["chainTvls"]["Hyperliquid"]["tvl"][-1],
-            "timestamp": datetime.fromtimestamp(raw_data["raw_data"]["chainTvls"]["Hyperliquid"]["tvl"]["date"])
+            "total_liquidity_usd": raw_data["raw_data"]["historical_tvl"]["tvl"][-1]["totalLiquidityUSD"],
+            "timestamp": datetime.fromtimestamp(raw_data["raw_data"]["historical_tvl"]["tvl"][-1]["date"])
         }
-    
-    def transform_volume(self, raw_data: Dict) -> Dict:
+
+    # creates a dictionary of all volume metrics in USD for a protocol    
+    def transform_protocol_volume(self, raw_data: Dict) -> Dict:
         return {
             "protocol_name": raw_data["protocol_name"],
             "24h_volume": raw_data["raw_data"]["protocol_volume"]["total24h"],
@@ -43,7 +46,7 @@ class DefiLlamaJsonTransformer:
     def tokens_in_usd_value(self, raw_data: Dict) -> Dict:
         return {
             "protocol_name": raw_data["protocol_name"],
-            "current_holdings_usd": raw_data["raw_data"]["chainTvls"]["Hyperliquid"]["tvl"]["tokensInUsd"][-1]
+            "current_holdings_usd": raw_data["raw_data"]["historical_tvl"]["tokensInUsd"][-1]
         }
         
     

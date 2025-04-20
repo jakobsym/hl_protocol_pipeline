@@ -14,7 +14,7 @@ class DefiLlamaAPIExtractor:
     def __init__(self, base_url: str = "https://api.llama.fi", raw_data_dir: str = "../../data/defi_llama_raw_json"):
         self.base_url = base_url
         self.session = requests.Session()
-        self.timeout = 1
+        self.timeout = 0.5
         self.raw_data_dir = raw_data_dir
 
         # create raw_json dir if !exist
