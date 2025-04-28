@@ -14,7 +14,7 @@ class DefiLlamaAPIExtractor:
     def __init__(self, base_url: str = "https://api.llama.fi", raw_data_dir: str = "../../data/defi_llama_raw_json"):
         self.base_url = base_url
         self.session = requests.Session()
-        self.timeout = 0.5
+        self.timeout = 0.7
         self.raw_data_dir = raw_data_dir
 
         # create raw_json dir if !exist
@@ -76,7 +76,7 @@ class DefiLlamaAPIExtractor:
                 protocol_data["errors"].append({"metric": metric, "error": str(e)})
         # store raw payload
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"{protocol}_consolidated_data_{timestamp}.json"
+        filename = f"{protocol}_consolidated_raw_metrics_{timestamp}.json"
         self._store_data(filename, protocol_data)
         return protocol_data
 
