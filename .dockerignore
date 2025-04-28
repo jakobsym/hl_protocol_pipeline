@@ -1,0 +1,38 @@
+.git/
+.github/
+.gitlab-ci.yml
+.gitignore
+
+# Ignore local development/config files
+.env                  
+*.env.local
+*.env.*.local
+
+# Ignore IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Ignore Python-specific files
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+venv/              
+env/
+
+# Ignore logs and local data
+logs/
+*.log
+tmp/
+data/
+
+# Ignore build artifacts
+dist/
+build/
+*.tar.gz
+*.whl
+
+# Ignore OS/metadata files
+.DS_Store            # macOS
