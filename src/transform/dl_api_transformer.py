@@ -36,9 +36,9 @@ class DefiLlamaJsonTransformer:
             volume_metric = raw_metics["raw_data"]["protocol_volume"]
             if isinstance(volume_metric, dict) and "500" not in volume_metric and "total24h" in volume_metric:
                 transformed_metrics.update({
-                    "24h_volume": volume_metric["total24h"],
-                    "48h_to_24h_volume": volume_metric["total48hto24h"],
-                    "7d_volume": volume_metric["total7d"],
+                    "volume_24h": volume_metric["total24h"],
+                    "volume_48h_to_24h": volume_metric["total48hto24h"],
+                    "volume_7d": volume_metric["total7d"],
                     "all_time_volume": volume_metric["totalAllTime"]
                 })
         

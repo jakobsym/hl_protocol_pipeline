@@ -18,7 +18,8 @@ def main():
             # transform raw data
             print(f"    Transforming {protocol} raw data...\n")
             transformed_metrics = dl_json_transformer.transform_protocol_metrics(protocol_metrics)
-
+            print(transformed_metrics)
+            
             # load transformed data into storage
         except Exception as e:
             print(f"  \nERROR processing {protocol}: {str(e)}")
