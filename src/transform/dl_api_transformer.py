@@ -3,6 +3,7 @@ import os
 import time
 import json
 from datetime import datetime
+from schemas.schemas import HlProtocolMetrics
 
 class DefiLlamaJsonTransformer:
     """ Class for raw data transformation from Defi Llama
@@ -19,15 +20,14 @@ class DefiLlamaJsonTransformer:
 
 
     # returns a dictionary of all relevant metrics for a protocol
-    # TODO: Maybe update total_liquidity_timestamp
-    def transform_protocol_metrics(self, raw_metics: Dict) -> Dict:
+    def transform_protocol_metrics(self, raw_metics: Dict) -> HlProtocolMetrics:
         protocol_name = raw_metics["protocol_name"]
         transformed_metrics = {
             "protocol_name": protocol_name,
             "current_tvl": raw_metics["raw_data"]["current_tvl"],
             "tvl_timestamp": raw_metics["timestamp"],
-            "total_liquidity_usd": raw_metics["raw_data"]["historical_tvl"]["tvl"][-1]["totalLiquidityUSD"],
-            "total_liquidity_timestamp": datetime.fromtimestamp(raw_metics["raw_data"]["historical_tvl"]["tvl"][-1]["date"]).isoformat(),
+            "total_liq_usd": raw_metics["raw_data"]["historical_tvl"]["tvl"][-1]["totalLiquidityUSD"],
+            "total_liq_timestamp": datetime.fromtimestamp(raw_metics["raw_data"]["historical_tvl"]["tvl"][-1]["date"]).isoformat(),
             "current_holdings_usd": raw_metics["raw_data"]["historical_tvl"]["tokensInUsd"][-1]
         }
 
@@ -41,11 +41,14 @@ class DefiLlamaJsonTransformer:
                     "7d_volume": volume_metric["total7d"],
                     "all_time_volume": volume_metric["totalAllTime"]
                 })
-                
+        
+        # validate transformed_metrics
+        metrics = HlProtocolMetrics(**transformed_metrics)
+    
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"{protocol_name}_transformed_metrics_{timestamp}.json"
         self._store_data(filename, transformed_metrics)
-        return transformed_metrics
+        return metrics
 
 
     def _store_data(self, filename:str, payload: Dict) -> str:
