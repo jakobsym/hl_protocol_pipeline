@@ -1,6 +1,5 @@
-from typing import Dict, Optional
+from typing import Dict
 import os
-import time
 import json
 from datetime import datetime
 from schemas.schemas import HlProtocolMetrics

@@ -1,7 +1,10 @@
 from extract.api_extractor import DefiLlamaAPIExtractor
 from transform.dl_api_transformer import DefiLlamaJsonTransformer
+from utils.logging import config_logging
 
-# TODO: 'valantis' and 'kittenswap-finance' are not listed within Defi llama dexs
+# init logging
+config_logging()
+
 def main():
     hyperliquid_dexs = ["hyperswap", "valantis", "kittenswap-finance", "laminar"]
     # blockchains = ["hyperliquid l1"]
@@ -18,7 +21,6 @@ def main():
             # transform raw data
             print(f"    Transforming {protocol} raw data...\n")
             transformed_metrics = dl_json_transformer.transform_protocol_metrics(protocol_metrics)
-            print(transformed_metrics)
             
             # load transformed data into storage
         except Exception as e:

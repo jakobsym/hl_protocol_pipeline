@@ -3,7 +3,10 @@ import requests
 import os
 import json
 import time
+import logging
 from datetime import datetime
+
+logger = logging.getLogger(__name__)
 
 class DefiLlamaAPIExtractor:
     """ Class for API extraction from Defi Llama API. 
@@ -16,13 +19,15 @@ class DefiLlamaAPIExtractor:
         self.session = requests.Session()
         self.timeout = 1
         self.raw_data_dir = raw_data_dir
-
+        
         # create raw_json dir if !exist
         self.raw_data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), raw_data_dir))
         os.makedirs(self.raw_data_dir, exist_ok=True) # set to true to avoid errors if it exists
 
     def _make_request(self, endpoint: str, method: Optional[str] = None, params: Optional[Dict] = None) -> Dict:
         url = f"{self.base_url}/{endpoint}"
+        start_time = time.time()
+
         try:
             res = self.session.get(
             url=url,
@@ -34,10 +39,13 @@ class DefiLlamaAPIExtractor:
                 return data
             else:
                 return {500:"error making request"}
-            
         except Exception as e:
-            return {"error": str(e)}
-    
+            logger.error("API call failed: %s", str(e), exc_info=True)
+            raise
+        finally:
+            elapsed = (time.time() - start_time) * 1000
+            logger.info("Completed %s in %.2fms", url, elapsed)
+            
     def _store_data(self, filename:str, payload: Dict) -> str:
         """
         Store raw JSON data for reprocessing (if needed)
