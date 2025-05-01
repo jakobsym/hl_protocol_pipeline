@@ -6,7 +6,7 @@ import time
 import logging
 from datetime import datetime
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("extract")
 
 class DefiLlamaAPIExtractor:
     """ Class for API extraction from Defi Llama API. 
@@ -17,7 +17,7 @@ class DefiLlamaAPIExtractor:
     def __init__(self, base_url: str = "https://api.llama.fi", raw_data_dir: str = "../../data/defi_llama_raw_json"):
         self.base_url = base_url
         self.session = requests.Session()
-        self.timeout = 1
+        self.timeout = 1.5
         self.raw_data_dir = raw_data_dir
         
         # create raw_json dir if !exist
@@ -41,7 +41,7 @@ class DefiLlamaAPIExtractor:
                 return {500:"error making request"}
         except Exception as e:
             logger.error("API call failed: %s", str(e), exc_info=True)
-            raise
+            raise # throw exception that was just caught back to caller, exits function 
         finally:
             elapsed = (time.time() - start_time) * 1000
             logger.info("Completed %s in %.2fms", url, elapsed)

@@ -18,7 +18,7 @@ def main():
             protocol_metrics = dl_api_extractor.collect_protocol_metrics(protocol)
 
             # transform raw data
-            print(f"    Transforming {protocol} raw data...\n")
+            #print(f"    Transforming {protocol} raw data...\n")
             transformed_metrics = dl_json_transformer.transform_protocol_metrics(protocol_metrics)
             
             # load transformed data into storage
