@@ -2,6 +2,16 @@ from pydantic import BaseModel, field_validator
 from typing import Optional
 from datetime import datetime
 
+class Token(BaseModel):
+    address: str
+    symbol: str
+    name: str
+    holders: int
+    type: str
+    supply: int
+
+
+
 class TokenHoldings(BaseModel):
     date: int
     tokens: dict[str, float]

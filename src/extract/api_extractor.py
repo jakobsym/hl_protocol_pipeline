@@ -52,7 +52,7 @@ class HyperscanAPIExtractor:
     def fetch_tokens(self) -> Dict:
         endpoint = "tokens"
         params = {
-            "type": "ERC-20,ERC-721,ERC-1155"
+            "type": "ERC-20"
         }
         
         payload = self._make_request(params=params, endpoint=endpoint)

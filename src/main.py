@@ -11,7 +11,9 @@ def main():
     hs_api_extractor = HyperscanAPIExtractor()
     dl_api_extractor = DefiLlamaAPIExtractor()
     dl_json_transformer = DefiLlamaJsonTransformer()
-
+    tokens = hs_api_extractor.fetch_tokens()
+    print(tokens)
+    
     for protocol in hyperliquid_dexs:
         try:
             """
