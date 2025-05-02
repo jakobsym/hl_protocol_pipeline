@@ -176,6 +176,7 @@ cython_debug/
 # raw_json contents
 *_consolidated_*
 *_transformed_*
+tokens_raw_*
 
 .vscode
 */logs

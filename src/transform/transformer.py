@@ -8,6 +8,17 @@ from schemas.schemas import HlProtocolMetrics
 
 logger = logging.getLogger("transform")
 
+class HyperScanJsonTransformer:
+    def __init__(self, transformed_data_dir: str = "../../data/hyperscan_transformed_data"):
+        self.transformed_data_dir = transformed_data_dir
+
+        # create transformed data directory
+        self.transformed_data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), transformed_data_dir))
+        os.makedirs(self.transformed_data_dir, exist_ok=True)
+
+
+
+
 class DefiLlamaJsonTransformer:
     """ Class for raw data transformation from Defi Llama
 

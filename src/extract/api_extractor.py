@@ -8,6 +8,63 @@ from datetime import datetime
 
 logger = logging.getLogger("extract")
 
+class HyperscanAPIExtractor:
+    def __init__(self, base_url: str = "https://hyperscan.gas.zip/api/v2", raw_data_dir: str = "../../data/hyperscan_raw_json"):
+        self.base_url = base_url
+        self.raw_data_dir = raw_data_dir
+        self.session = requests.Session()
+        self.timeout = 1
+
+        # create raw_json dir if !exist
+        self.raw_data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), raw_data_dir))
+        os.makedirs(self.raw_data_dir, exist_ok=True) # set to true to avoid errors if it exists
+    
+    def _make_request(self, endpoint: str, params: Optional[Dict] = None) -> Dict:
+        url = f"{self.base_url}/{endpoint}"
+        start_time = time.time()
+
+        try:
+            res = self.session.get(
+            url=url,
+            params=params,
+            timeout=self.timeout
+            )
+
+            if res.status_code == 200:
+                data =res.json()
+                return data
+        except Exception as e:
+            logger.error("API call failed: %s", str(e), exc_info=True)
+            raise
+        finally:
+            elapsed_time = (time.time() - start_time) * 1000
+            logger.info("Completed %s in %.2fms", url, elapsed_time)
+
+    def _store_data(self, filename:str, payload: Dict) -> str:
+        """
+        Store raw JSON data for reprocessing (if needed)
+        """
+        filepath = os.path.join(self.raw_data_dir, filename)
+        with open(filepath, 'w') as f:
+            json.dump(payload, f, indent=2)
+        return filepath
+    
+    def fetch_tokens(self) -> Dict:
+        endpoint = "tokens"
+        params = {
+            "type": "ERC-20,ERC-721,ERC-1155"
+        }
+        
+        payload = self._make_request(params=params, endpoint=endpoint)
+        # build file
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"tokens_raw_metrics{timestamp}.json"
+        self._store_data(payload=payload, filename=filename)
+
+        return payload
+    
+        
+
 class DefiLlamaAPIExtractor:
     """ Class for API extraction from Defi Llama API. 
     
@@ -16,9 +73,9 @@ class DefiLlamaAPIExtractor:
     """
     def __init__(self, base_url: str = "https://api.llama.fi", raw_data_dir: str = "../../data/defi_llama_raw_json"):
         self.base_url = base_url
+        self.raw_data_dir = raw_data_dir
         self.session = requests.Session()
         self.timeout = 1.5
-        self.raw_data_dir = raw_data_dir
         
         # create raw_json dir if !exist
         self.raw_data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), raw_data_dir))

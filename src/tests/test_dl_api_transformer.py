@@ -1,5 +1,5 @@
 import pytest
-from transform.dl_api_transformer import DefiLlamaJsonTransformer
+from transform.transformer import DefiLlamaJsonTransformer
 from schemas.schemas import HlProtocolMetrics
 
 class TestDefiLlamaJsonTransformer:
