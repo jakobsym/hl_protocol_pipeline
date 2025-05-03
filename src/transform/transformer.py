@@ -4,7 +4,7 @@ import json
 import logging
 import time
 from datetime import datetime
-from schemas.schemas import HlProtocolMetrics
+from schemas.schemas import HlProtocolMetrics, Tokens
 
 logger = logging.getLogger("transform")
 
@@ -16,7 +16,51 @@ class HyperScanJsonTransformer:
         self.transformed_data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), transformed_data_dir))
         os.makedirs(self.transformed_data_dir, exist_ok=True)
 
+    def transform_token_payload(self, payload: Dict) -> Dict:
+        start_time = time.time()
+        tokens = payload["items"]
+        transformed_tokens = {}
+        
+        try:
+            for token in tokens:
+                if token["symbol"] == None:
+                    continue
+                transformed_tokens[token["address"]] = {
+                    "symbol": token["symbol"],
+                    "name": token["name"],
+                    "holders": token["holders"], 
+                    "type": token["type"],
+                    "supply": token["total_supply"]
+                    }
+                
+            # validate transformed_tokens
+            validated_tokens = Tokens(**transformed_tokens)
 
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"hyperscan_transformed_metrics_{timestamp}.json"
+            self._store_data(filename, transformed_tokens)
+
+            return validated_tokens
+        except Exception as e:
+            logger.error("processing failed for %s: %s", token, str(e), exc_info=True)
+            raise
+        finally:
+            elapsed_time = (time.time() - start_time) * 1000
+            logger.info("Completed transformation in %.2fms", elapsed_time)
+
+
+    def _store_data(self, filename:str, payload: Dict) -> str:
+        """
+        Store raw JSON data for reprocessing (if needed)
+        """
+        filepath = os.path.join(self.transformed_data_dir, filename)
+        with open(filepath, 'w') as f:
+            json.dump(payload, f, indent=2)
+        return filepath
+
+
+            
+        
 
 
 class DefiLlamaJsonTransformer:

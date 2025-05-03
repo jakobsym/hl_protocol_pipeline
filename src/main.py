@@ -1,5 +1,5 @@
 from extract.api_extractor import DefiLlamaAPIExtractor, HyperscanAPIExtractor
-from transform.transformer import DefiLlamaJsonTransformer
+from transform.transformer import DefiLlamaJsonTransformer, HyperScanJsonTransformer
 from utils.logging import config_logging
 
 # init logging
@@ -8,11 +8,16 @@ config_logging()
 def main():
     hyperliquid_dexs = ["hyperswap", "valantis", "kittenswap-finance", "laminar"]
     # blockchains = ["hyperliquid l1"]
+
     hs_api_extractor = HyperscanAPIExtractor()
+    hs_json_transformer = HyperScanJsonTransformer()
     dl_api_extractor = DefiLlamaAPIExtractor()
     dl_json_transformer = DefiLlamaJsonTransformer()
+
     tokens = hs_api_extractor.fetch_tokens()
-    print(tokens)
+    transformed_tokens = hs_json_transformer.transform_token_payload(tokens)
+    print(transformed_tokens)
+    
     
     for protocol in hyperliquid_dexs:
         try:

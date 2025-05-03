@@ -3,14 +3,14 @@ from typing import Optional
 from datetime import datetime
 
 class Token(BaseModel):
-    address: str
-    symbol: str
-    name: str
-    holders: int
+    symbol: Optional[str] = None
+    name: Optional[str] = None
+    holders: Optional[str] = None
     type: str
-    supply: int
+    supply: Optional[str] = None
 
-
+class Tokens(BaseModel):
+    dict[str, Token]
 
 class TokenHoldings(BaseModel):
     date: int
