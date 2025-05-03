@@ -5,9 +5,9 @@ from datetime import datetime
 class Token(BaseModel):
     symbol: Optional[str] = None
     name: Optional[str] = None
-    holders: Optional[str] = None
+    holders: Optional[int] = None
     type: str
-    supply: Optional[str] = None
+    supply: Optional[int] = None
 
 class Tokens(BaseModel):
     dict[str, Token]

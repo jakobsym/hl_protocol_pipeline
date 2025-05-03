@@ -16,21 +16,21 @@ class HyperScanJsonTransformer:
         self.transformed_data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), transformed_data_dir))
         os.makedirs(self.transformed_data_dir, exist_ok=True)
 
-    def transform_token_payload(self, payload: Dict) -> Dict:
+    def transform_token_payload(self, payload: Dict) -> Tokens:
         start_time = time.time()
         tokens = payload["items"]
         transformed_tokens = {}
         
         try:
             for token in tokens:
-                if token["symbol"] == None:
+                if token["symbol"] == None or token["symbol"] == "Claim: hyperliquid-labs.com":
                     continue
                 transformed_tokens[token["address"]] = {
                     "symbol": token["symbol"],
                     "name": token["name"],
-                    "holders": token["holders"], 
+                    "holders": int(token["holders"]), 
                     "type": token["type"],
-                    "supply": token["total_supply"]
+                    "supply": int(token["total_supply"])
                     }
                 
             # validate transformed_tokens

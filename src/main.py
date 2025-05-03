@@ -14,8 +14,8 @@ def main():
     # blockchains = ["hyperliquid l1"]
 
     hs_api_extractor = HyperscanAPIExtractor()
-    hs_json_transformer = HyperScanJsonTransformer()
     dl_api_extractor = DefiLlamaAPIExtractor()
+    hs_json_transformer = HyperScanJsonTransformer()
     dl_json_transformer = DefiLlamaJsonTransformer()
 
     tokens = hs_api_extractor.fetch_tokens()
@@ -28,12 +28,12 @@ def main():
             protocol_metrics = dl_api_extractor.collect_protocol_metrics(protocol)
 
             # transform raw data
-            #print(f"    Transforming {protocol} raw data...\n")
             transformed_metrics = dl_json_transformer.transform_protocol_metrics(protocol_metrics)
             
             # load transformed data into storage
+            
         except Exception as e:
-            print(f"  \nERROR processing {protocol}: {str(e)}")
+            logger.error("Error processing %s: %s", protocol, str(e))
 
     elapsed_time = (time.time() - start_time) * 1000
     logger.info("Completed batch process in %.2fms", elapsed_time)
