@@ -35,6 +35,7 @@ def main():
         except Exception as e:
             logger.error("Error processing %s: %s", protocol, str(e))
 
+    # TODO: Create a payload that contains all transformed data that gets loaded in 1 stage, so there is not so many DB calls
     elapsed_time = (time.time() - start_time) * 1000
     logger.info("Completed batch process in %.2fms", elapsed_time)
             
