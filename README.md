@@ -42,13 +42,13 @@ flowchart TD
     T -->|"Read raw data"| PostgreSQL
     L -->|"Load transformed data"| Snowflake
     
-    %% Styling with more subdued colors
-    classDef scheduler fill:#d4e6f1,stroke:#2874a6,stroke-width:2px
-    classDef process fill:#d5f5e3,stroke:#1e8449,stroke-width:2px
-    classDef database fill:#fdebd0,stroke:#d35400,stroke-width:2px
-    classDef storage fill:#f9e79f,stroke:#b7950b,stroke-width:2px
-    classDef external fill:#ebdef0,stroke:#8e44ad,stroke-width:2px
-    classDef container fill:#f8f9f9,stroke:#5d6d7e,stroke-width:2px,stroke-dasharray:5
+    %% Styling with black text
+    classDef scheduler fill:#d4e6f1,stroke:#2874a6,stroke-width:2px,color:#000000
+    classDef process fill:#d5f5e3,stroke:#1e8449,stroke-width:2px,color:#000000
+    classDef database fill:#fdebd0,stroke:#d35400,stroke-width:2px,color:#000000
+    classDef storage fill:#f9e79f,stroke:#b7950b,stroke-width:2px,color:#000000
+    classDef external fill:#ebdef0,stroke:#8e44ad,stroke-width:2px,color:#000000
+    classDef container fill:#f8f9f9,stroke:#5d6d7e,stroke-width:2px,stroke-dasharray:5,color:#000000
     
     class JenkinsETL,JenkinsGit scheduler
     class E,T,L,GitHubExtract process
