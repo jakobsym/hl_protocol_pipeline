@@ -24,7 +24,6 @@ def main():
     
     for protocol in hyperliquid_dexs:
         try:
-            
             # extract raw data
             protocol_metrics = dl_api_extractor.collect_protocol_metrics(protocol)
 

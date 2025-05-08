@@ -37,6 +37,7 @@ class BlobExtractor:
             content = download_stream.readall()
 
             json_content = json.loads(content)
+            logger.info(f"Blob content: {json_content}")
             return json_content
         except Exception as e:
             logger.error("Failed to fetch blob data: %s", str(e), exc_info=True)
