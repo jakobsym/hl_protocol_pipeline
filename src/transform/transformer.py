@@ -29,7 +29,6 @@ class HyperScanJsonTransformer:
                     "symbol": token["symbol"],
                     "name": token["name"],
                     "holders": int(token["holders"]), 
-                    "type": token["type"],
                     "supply": int(token["total_supply"])
                     }
                 

@@ -1,6 +1,7 @@
 import logging
 import time
 from extract.api_extractor import DefiLlamaAPIExtractor, HyperscanAPIExtractor
+from extract.blob_extractor import read_blob
 from transform.transformer import DefiLlamaJsonTransformer, HyperScanJsonTransformer
 from utils.logging import config_logging
 

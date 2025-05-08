@@ -8,13 +8,6 @@ from datetime import datetime
 
 logger = logging.getLogger("extract")
 
-"""
-This is the endpoint you will call for tokens extraced from Azure blob storage so you can
-append total # of holders to these tokens for when you create transformed payload
-curl -X 'GET' \
-  'https://hyperscan.gas.zip/api/v2/tokens/0xFE69bc93B936B34D371defa873686C116C8488c2/counters' \
-  -H 'accept: application/json'
-  """
 class HyperscanAPIExtractor:
     def __init__(self, base_url: str = "https://hyperscan.gas.zip/api/v2", raw_data_dir: str = "../../data/hyperscan_raw_json"):
         self.base_url = base_url

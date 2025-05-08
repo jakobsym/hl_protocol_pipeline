@@ -6,7 +6,6 @@ class Token(BaseModel):
     symbol: Optional[str] = None
     name: Optional[str] = None
     holders: Optional[int] = None
-    type: str
     supply: Optional[int] = None
 
 class Tokens(BaseModel):
