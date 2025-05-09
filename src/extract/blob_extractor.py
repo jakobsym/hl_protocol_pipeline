@@ -4,7 +4,8 @@ import os
 import logging
 from typing import Dict
 from dotenv import load_dotenv
-from azure.storage.blob import BlobClient, BlobServiceClient, ContainerClient
+from azure.storage.blob import BlobServiceClient
+from schemas.schemas import Tokens
 
 logger = logging.getLogger("extract")
 load_dotenv()
@@ -45,19 +46,21 @@ class BlobExtractor:
 
     #calls hyperscan api for e/a token to get its holders and (WIP) supply
     # this is only for tokens that are not apart of other payload
-    # TODO: Change function name to relate to blobs
-    def fetch_token_data(self, blob: Dict) -> Dict:
+    def unpack_blob_data(self, blob: Dict) -> dict:
         tokens = blob["tokens"]
-        semi_transformed_tokens = {}
-        
+        token_data_list = []
+        transformed_tokens = {}
+
         for token in tokens:
-            semi_transformed_tokens[token["address"]] = {
+            token_data_list.append({
+                "address": token["address"],
                 "symbol": token["symbol"],
                 "name": token["name"],
                 "holders": self.fetch_token_holders(token["address"])
-            }
-            
-        return semi_transformed_tokens
+            })
+
+        transformed_tokens["items"] = token_data_list
+        return transformed_tokens
     
         
     # TODO: make async 
@@ -66,7 +69,7 @@ class BlobExtractor:
         url = f"https://hyperscan.gas.zip/api/v2/tokens/{token_address}/counters"
 
         try:
-            res = session.get(url=url, timeout=5)
+            res = session.get(url=url, timeout=8)
             if res.status_code == 200:
                 data = res.json()
                 return int(data["token_holders_count"])
