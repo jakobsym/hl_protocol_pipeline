@@ -45,30 +45,32 @@ class BlobExtractor:
 
     #calls hyperscan api for e/a token to get its holders and (WIP) supply
     # this is only for tokens that are not apart of other payload
+    # TODO: Change function name to relate to blobs
     def fetch_token_data(self, blob: Dict) -> Dict:
         tokens = blob["tokens"]
         semi_transformed_tokens = {}
-
+        
         for token in tokens:
             semi_transformed_tokens[token["address"]] = {
                 "symbol": token["symbol"],
                 "name": token["name"],
                 "holders": self.fetch_token_holders(token["address"])
             }
-        
+            
         return semi_transformed_tokens
-
-            
-            
+    
+        
+    # TODO: make async 
     def fetch_token_holders(self, token_address: str) -> int:
         session = requests.Session()
         url = f"https://hyperscan.gas.zip/api/v2/tokens/{token_address}/counters"
 
         try:
-            res = session.get(url=url, timeout=0.5)
+            res = session.get(url=url, timeout=5)
             if res.status_code == 200:
                 data = res.json()
                 return int(data["token_holders_count"])
+            return -1
         except Exception as e:
-            logger.error("API call failed: %s", str(e), exc_info=True)
+            logger.error("API call failed fetching token holders: %s", str(e), exc_info=True)
             raise
