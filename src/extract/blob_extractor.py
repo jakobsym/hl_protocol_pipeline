@@ -1,4 +1,7 @@
 import json
+import asyncio
+from shutil import ExecError
+import aiohttp
 import requests
 import os
 import logging
@@ -46,7 +49,7 @@ class BlobExtractor:
 
     #calls hyperscan api for e/a token to get its holders and (WIP) supply
     # this is only for tokens that are not apart of other payload
-    def unpack_blob_data(self, blob: Dict) -> dict:
+    async def unpack_blob_data(self, blob: Dict) -> dict:
         tokens = blob["tokens"]
         token_data_list = []
         transformed_tokens = {}
@@ -56,24 +59,44 @@ class BlobExtractor:
                 "address": token["address"],
                 "symbol": token["symbol"],
                 "name": token["name"],
-                "holders": self.fetch_token_holders(token["address"])
+                "holders": await self.fetch_token_holders(token["address"]),
+                "total_supply": await self.fetch_supply(token["address"])
             })
 
         transformed_tokens["items"] = token_data_list
         return transformed_tokens
     
         
-    # TODO: make async 
-    def fetch_token_holders(self, token_address: str) -> int:
-        session = requests.Session()
+    # TODO: Possibly relocate these methods as these are transforming the given data
+    # TODO: Add logging
+    # TODO: These run so slow, can that be fixed?
+    async def fetch_token_holders(self, token_address: str) -> int:
         url = f"https://hyperscan.gas.zip/api/v2/tokens/{token_address}/counters"
-
         try:
-            res = session.get(url=url, timeout=8)
-            if res.status_code == 200:
-                data = res.json()
-                return int(data["token_holders_count"])
-            return -1
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url) as res:
+                    if res.status == 200:
+                        data = await res.json()
+                        return int(data["token_holders_count"])
+                    return -1
         except Exception as e:
             logger.error("API call failed fetching token holders: %s", str(e), exc_info=True)
+            raise
+
+    # TODO: conditional logic seems off here, can probably rewrite
+    # TODO: Add logging
+    async def fetch_supply(self, token_address: str) -> int:
+        url = f"https://hyperscan.gas.zip/api/v2/tokens/{token_address}"
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url) as res:
+                    if res.status != 200:
+                        return -1
+                    data = await res.json()
+                    if data["total_supply"] != None:
+                        return int(data["total_supply"])
+                    else:
+                        return -1
+        except Exception as e:
+            logger.error("API call failed fetching token supply: %s", str(e), exc_info=True)
             raise
