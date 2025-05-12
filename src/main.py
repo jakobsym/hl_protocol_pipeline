@@ -1,6 +1,7 @@
 import logging
 import time
 import asyncio
+from utils.util import merge_dict
 from extract.api_extractor import DefiLlamaAPIExtractor, HyperscanAPIExtractor
 from extract.blob_extractor import BlobExtractor
 from transform.transformer import DefiLlamaJsonTransformer, JsonTokenTransformer
@@ -31,8 +32,9 @@ async def main():
     token_blob_data = await blob_extractor.unpack_blob_data(blob=mock_blob)
     token_api_data = hs_api_extractor.fetch_tokens()
 
-    # TODO: Zip blob_data, and Tokens as 1 large payload to transform?
-    transformed_tokens = json_transformer.transform_token_payload(blob_data)
+    token_data = merge_dict(token_api_data, token_blob_data)
+    transformed_tokens = json_transformer.transform_token_payload(token_data)
+    print(transformed_tokens)
     
     """
     for protocol in hyperliquid_dexs:
