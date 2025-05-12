@@ -8,7 +8,7 @@ from schemas.schemas import HlProtocolMetrics, Tokens
 
 logger = logging.getLogger("transform")
 
-class HyperScanJsonTransformer:
+class JsonTokenTransformer:
     def __init__(self, transformed_data_dir: str = "../../data/hyperscan_transformed_data"):
         self.transformed_data_dir = transformed_data_dir
 
