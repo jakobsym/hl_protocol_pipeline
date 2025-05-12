@@ -1,14 +1,10 @@
 import json
-import asyncio
-from shutil import ExecError
 import aiohttp
-import requests
 import os
 import logging
 from typing import Dict
 from dotenv import load_dotenv
 from azure.storage.blob import BlobServiceClient
-from schemas.schemas import Tokens
 
 logger = logging.getLogger("extract")
 load_dotenv()
