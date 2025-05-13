@@ -33,8 +33,9 @@ async def main():
     token_api_data = hs_api_extractor.fetch_tokens()
 
     token_data = merge_dict(token_api_data, token_blob_data)
-    transformed_tokens = json_transformer.transform_token_payload(token_data)
-    print(transformed_tokens)
+    print(token_data)
+    #transformed_tokens = json_transformer.transform_token_payload(token_data)
+    #print(transformed_tokens)
     
     """
     for protocol in hyperliquid_dexs:

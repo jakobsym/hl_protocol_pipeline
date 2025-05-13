@@ -1,5 +1,6 @@
 import json
 import aiohttp
+import asyncio
 import os
 import logging
 from typing import Dict
@@ -71,6 +72,7 @@ class BlobExtractor:
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.get(url) as res:
+                    await asyncio.sleep(4)
                     if res.status == 200:
                         data = await res.json()
                         return int(data["token_holders_count"])
@@ -86,6 +88,7 @@ class BlobExtractor:
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.get(url) as res:
+                    await asyncio.sleep(4)
                     if res.status != 200:
                         return -1
                     data = await res.json()
