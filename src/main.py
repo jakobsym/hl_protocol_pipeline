@@ -33,17 +33,14 @@ async def main():
     token_api_data = hs_api_extractor.fetch_tokens()
 
     token_data = merge_dict(token_api_data, token_blob_data)
-    print(token_data)
-    #transformed_tokens = json_transformer.transform_token_payload(token_data)
-    #print(transformed_tokens)
+    transformed_tokens = json_transformer.transform_token_payload(token_data)
     
-    """
     for protocol in hyperliquid_dexs:
         try:
-            # extract raw data
+            # extract raw protocol data
             protocol_metrics = dl_api_extractor.collect_protocol_metrics(protocol)
 
-            # transform raw data
+            # transform protocol data
             transformed_metrics = dl_json_transformer.transform_protocol_metrics(protocol_metrics)
             
             # load transformed data into storage
@@ -52,9 +49,9 @@ async def main():
             logger.error("Error processing %s: %s", protocol, str(e))
 
     # TODO: Create a payload that contains all transformed data that gets loaded in 1 stage, so there is not so many DB calls
+    
     elapsed_time = (time.time() - start_time) * 1000
     logger.info("Completed batch process in %.2fms", elapsed_time)
-    """     
 if __name__ == "__main__":
     asyncio.run(main())
 
