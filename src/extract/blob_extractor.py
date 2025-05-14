@@ -50,20 +50,29 @@ class BlobExtractor:
         tokens = blob["tokens"]
         token_data_list = []
         transformed_tokens = {}
+        try:
+            tasks = [self.fetch_token_data(token) for token in tokens]
+            token_data_list = await asyncio.gather(*tasks)
 
-        for token in tokens:
-            token_data_list.append({
-                "address": token["address"],
-                "symbol": token["symbol"],
-                "name": token["name"],
-                "holders": await self.fetch_token_holders(token["address"]),
-                "total_supply": await self.fetch_supply(token["address"])
-            })
+            transformed_tokens["items"] = token_data_list
+            return transformed_tokens
+        except Exception as e:
+            logger.error("Unpacking blob data failed: %s", str(e), exc_info=True)
+            raise
 
-        transformed_tokens["items"] = token_data_list
-        return transformed_tokens
     
-        
+    
+    async def fetch_token_data(self, token: Dict) -> dict:
+        holders = await self.fetch_token_holders(token["address"]) 
+        token_supply = await self.fetch_supply(token["address"])
+        return {
+            "address": token["address"],
+            "symbol": token["symbol"],
+            "name": token["name"],
+            "holders": holders,
+            "total_supply": token_supply
+        }
+
     # TODO: Possibly relocate these methods as these are transforming the given data
     # TODO: Add logging
     # TODO: These run so slow, can that be fixed?
@@ -72,7 +81,6 @@ class BlobExtractor:
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.get(url) as res:
-                    await asyncio.sleep(4)
                     if res.status == 200:
                         data = await res.json()
                         return int(data["token_holders_count"])
@@ -88,7 +96,6 @@ class BlobExtractor:
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.get(url) as res:
-                    await asyncio.sleep(4)
                     if res.status != 200:
                         return -1
                     data = await res.json()
