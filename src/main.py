@@ -44,14 +44,11 @@ async def main():
             # transform protocol data
             transformed_protocol_metrics = dl_json_transformer.transform_protocol_metrics(raw_protocol_metrics)
 
-            # load transformed data into storage
+            # load transformed data into a dictionary payload
             protocol_metrics[protocol] = transformed_protocol_metrics
         except Exception as e:
             logger.error("Error processing %s: %s", protocol, str(e))
-
-    print(protocol_metrics)
-    # TODO: Create a payload that contains all transformed data that gets loaded in 1 stage, so there is not so many DB calls
-
+            
     elapsed_time = (time.time() - start_time) * 1000
     logger.info("Completed batch process in %.2fms", elapsed_time)
     
