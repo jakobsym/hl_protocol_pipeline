@@ -160,6 +160,7 @@ class DefiLlamaAPIExtractor:
 
         return self._make_request(endpoint, params=params)
     
+    # Returns all holdings for a given protocol as well as historical tvl
     def get_historical_protocol_tvl(self, protocol: str):
         endpoint = f"protocol/{protocol}"
         return self._make_request(endpoint=endpoint)

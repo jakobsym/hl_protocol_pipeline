@@ -45,7 +45,7 @@ class JsonTokenTransformer:
             raise
         finally:
             elapsed_time = (time.time() - start_time) * 1000
-            logger.info("Completed transformation in %.2fms", elapsed_time)
+            logger.info("Completed transformation in %.2fms\n", elapsed_time)
 
 
     def _store_data(self, filename:str, payload: Dict) -> str:
@@ -112,7 +112,7 @@ class DefiLlamaJsonTransformer:
             raise
         finally:
             elapsed = (time.time() - start_time) * 1000
-            logger.info("Completed transformation in %.2fms", elapsed)
+            logger.info("Completed transformation in %.2fms\n", elapsed)
     
     def _store_data(self, filename:str, payload: Dict) -> str:
         """

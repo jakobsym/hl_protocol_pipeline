@@ -14,7 +14,7 @@ logger = logging.getLogger("main")
 async def main():
     start_time = time.time()
     hyperliquid_dexs = ["hyperswap", "valantis", "kittenswap-finance", "laminar"]
-    
+    protocol_metrics = {}
     
     """
     - try to avoid running locally to avoid paying for azure blob extraction
@@ -34,23 +34,22 @@ async def main():
 
     token_data = merge_dict(token_api_data, token_blob_data)
     transformed_tokens = json_transformer.transform_token_payload(token_data)
-    print(transformed_tokens)
-    
     
     # TODO: can this be a function?
     for protocol in hyperliquid_dexs:
         try:
             # extract raw protocol data
-            protocol_metrics = dl_api_extractor.collect_protocol_metrics(protocol)
+            raw_protocol_metrics = dl_api_extractor.collect_protocol_metrics(protocol)
 
             # transform protocol data
-            transformed_metrics = dl_json_transformer.transform_protocol_metrics(protocol_metrics)
-            
+            transformed_protocol_metrics = dl_json_transformer.transform_protocol_metrics(raw_protocol_metrics)
+
             # load transformed data into storage
-            
+            protocol_metrics[protocol] = transformed_protocol_metrics
         except Exception as e:
             logger.error("Error processing %s: %s", protocol, str(e))
 
+    print(protocol_metrics)
     # TODO: Create a payload that contains all transformed data that gets loaded in 1 stage, so there is not so many DB calls
 
     elapsed_time = (time.time() - start_time) * 1000
