@@ -36,7 +36,7 @@ class JsonTokenTransformer:
             validated_tokens = Tokens(**transformed_tokens)
 
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = f"hyperscan_transformed_metrics_{timestamp}.json"
+            filename = f"transformed_token_metrics_{timestamp}.json"
             self._store_data(filename, transformed_tokens)
 
             return validated_tokens

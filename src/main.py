@@ -34,7 +34,10 @@ async def main():
 
     token_data = merge_dict(token_api_data, token_blob_data)
     transformed_tokens = json_transformer.transform_token_payload(token_data)
+    print(transformed_tokens)
     
+    
+    # TODO: can this be a function?
     for protocol in hyperliquid_dexs:
         try:
             # extract raw protocol data
@@ -49,9 +52,10 @@ async def main():
             logger.error("Error processing %s: %s", protocol, str(e))
 
     # TODO: Create a payload that contains all transformed data that gets loaded in 1 stage, so there is not so many DB calls
-    
+
     elapsed_time = (time.time() - start_time) * 1000
     logger.info("Completed batch process in %.2fms", elapsed_time)
+    
 if __name__ == "__main__":
     asyncio.run(main())
 

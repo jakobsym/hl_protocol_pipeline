@@ -13,7 +13,7 @@ class HyperscanAPIExtractor:
         self.base_url = base_url
         self.raw_data_dir = raw_data_dir
         self.session = requests.Session()
-        self.timeout = 1
+        self.timeout = 3
 
         # create raw_json dir if !exist
         self.raw_data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), raw_data_dir))
