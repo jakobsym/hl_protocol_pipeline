@@ -5,6 +5,7 @@ from utils.util import merge_dict
 from extract.api_extractor import DefiLlamaAPIExtractor, HyperscanAPIExtractor
 from extract.blob_extractor import BlobExtractor
 from transform.transformer import DefiLlamaJsonTransformer, JsonTokenTransformer
+from extract.evm_extractor import HyperEvmBlockExtractor
 from utils.logging import config_logging
 
 # init logging
@@ -15,11 +16,13 @@ async def main():
     start_time = time.time()
     hyperliquid_dexs = ["hyperswap", "valantis", "kittenswap-finance", "laminar"]
     protocol_metrics = {}
-    
+    evm_extractor = HyperEvmBlockExtractor()
+    print(evm_extractor.read_evm())
+
     """
     - try to avoid running locally to avoid paying for azure blob extraction
     # blob = blob_extractor.fetch_raw_blob_data()
-    """
+    
 
     
     blob_extractor = BlobExtractor()
@@ -51,6 +54,7 @@ async def main():
             
     elapsed_time = (time.time() - start_time) * 1000
     logger.info("Completed batch process in %.2fms", elapsed_time)
+    """
     
 if __name__ == "__main__":
     asyncio.run(main())
