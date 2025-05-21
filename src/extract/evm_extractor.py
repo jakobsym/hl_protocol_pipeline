@@ -38,6 +38,7 @@ class HyperEvmBlockExtractor:
             total_supply = token_contract.functions.totalSupply().call()
 
             return {
+            "token_address": tokenAddress,
             "name": name,
             "symbol": symbol,
             "total_supply": total_supply
@@ -50,17 +51,23 @@ class HyperEvmBlockExtractor:
     def read_evm(self) -> list:
         token_list = []
         connection = self._connect_to_rpc()
-        
-        block = connection.eth.get_block('latest', full_transactions=True)
+        delay = 0.5
 
-        for tx_hash in block.transactions:
-            tx_receipt = connection.eth.get_transaction_receipt(tx_hash['hash'])
-            if tx_receipt["contractAddress"]:
-                token_info = self._get_token_info(tx_receipt["contractAddress"], connection)
-                token_list.append(token_info)
-
-        return token_list
-            
+        try:
+            block = connection.eth.get_block('latest', full_transactions=True)
+            time.sleep(delay)
+            for tx_hash in block.transactions:
+                tx_receipt = connection.eth.get_transaction_receipt(tx_hash['hash'])
+                token_list.append(tx_receipt)
+                
+                if tx_receipt["contractAddress"] != None:
+                    token_info = self._get_token_info(tx_receipt["contractAddress"], connection)
+                    token_list.append(token_info)
+                
+            return token_list
+        except Exception as e:
+            logger.error(f"failed to get_block {block}: {str(e)}")
+            raise
         
 
 

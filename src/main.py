@@ -16,8 +16,10 @@ async def main():
     start_time = time.time()
     hyperliquid_dexs = ["hyperswap", "valantis", "kittenswap-finance", "laminar"]
     protocol_metrics = {}
-    evm_extractor = HyperEvmBlockExtractor()
-    print(evm_extractor.read_evm())
+    
+    while True:
+        evm_extractor = HyperEvmBlockExtractor()
+        print(evm_extractor.read_evm())
 
     """
     - try to avoid running locally to avoid paying for azure blob extraction
@@ -54,8 +56,8 @@ async def main():
             
     elapsed_time = (time.time() - start_time) * 1000
     logger.info("Completed batch process in %.2fms", elapsed_time)
+
     """
-    
 if __name__ == "__main__":
     asyncio.run(main())
 
