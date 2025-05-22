@@ -9,7 +9,7 @@ class Token(BaseModel):
     supply: Optional[int] = None
 
 class Tokens(BaseModel):
-    dict[str, Token]
+    tokens: dict[str, Token]
 
 class TokenHoldings(BaseModel):
     date: int
