@@ -51,10 +51,12 @@ class BlobExtractor:
         token_data_list = []
         transformed_tokens = {}
         try:
+            logger.info("Unpacking blob data...")
             tasks = [self.fetch_token_data(token) for token in tokens]
             token_data_list = await asyncio.gather(*tasks)
 
             transformed_tokens["items"] = token_data_list
+            logger.info("Completed unpacking blob data...\n")
             return transformed_tokens
         except Exception as e:
             logger.error("Unpacking blob data failed: %s", str(e), exc_info=True)

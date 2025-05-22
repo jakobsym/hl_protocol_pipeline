@@ -54,13 +54,12 @@ class HyperscanAPIExtractor:
         params = {
             "type": "ERC-20"
         }
-        
+        logger.info("Fetching tokens from HyperScan...")
         payload = self._make_request(params=params, endpoint=endpoint)
         # build file
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"tokens_raw_metrics{timestamp}.json"
         self._store_data(payload=payload, filename=filename)
-
         return payload
     
         
