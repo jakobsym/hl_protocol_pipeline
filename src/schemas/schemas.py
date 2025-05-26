@@ -9,7 +9,16 @@ class Token(BaseModel):
     supply: Optional[int] = None
 
 class Tokens(BaseModel):
+    timestamp: datetime
+    batch_id: int
     tokens: dict[str, Token]
+    @field_validator('timestamp')
+    @classmethod
+    def parse_timestamp(cls, value):
+        if isinstance(value, str):
+            return datetime.fromisoformat(value)
+        return value
+
 
 class TokenHoldings(BaseModel):
     date: int

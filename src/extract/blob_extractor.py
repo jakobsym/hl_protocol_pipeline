@@ -1,4 +1,5 @@
 import json
+from socket import timeout
 import aiohttp
 import asyncio
 import os
@@ -85,6 +86,7 @@ class BlobExtractor:
                 async with session.get(url) as res:
                     if res.status == 200:
                         data = await res.json()
+                        await asyncio.sleep(0.8) #TODO: This can increased in prod
                         return int(data["token_holders_count"])
                     return -1
         except Exception as e:
@@ -102,6 +104,7 @@ class BlobExtractor:
                         return -1
                     data = await res.json()
                     if data["total_supply"] != None:
+                        await asyncio.sleep(1)
                         return int(data["total_supply"])
                     else:
                         return -1

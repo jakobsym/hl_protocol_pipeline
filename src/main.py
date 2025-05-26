@@ -32,7 +32,7 @@ async def main():
     token_blob_data = await blob_extractor.unpack_blob_data(blob=mock_blob)
     token_api_data = hs_api_extractor.fetch_tokens()
 
-    token_data = merge_dict(token_api_data, token_blob_data)
+    token_data = merge_dict(token_api_data, token_blob_data) # TODO: Case where token_api_data or token_blob_data is returned as an empty dict
     transformed_tokens = json_transformer.transform_token_payload(token_data)
     
     
@@ -50,6 +50,9 @@ async def main():
         except Exception as e:
             logger.error("Error processing %s: %s", protocol, str(e))
     
+    print(transformed_tokens)
+    print("\n")
+    print(protocol_metrics)
     elapsed_time = (time.time() - start_time) * 1000
     logger.info("Completed batch process in %.2fms", elapsed_time)
 
