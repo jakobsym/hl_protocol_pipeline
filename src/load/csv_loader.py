@@ -1,4 +1,5 @@
 import os
+from schemas.schemas import HlProtocolMetrics, Tokens
 
 class CSVFileLoader:
 
@@ -10,3 +11,9 @@ class CSVFileLoader:
         self.hl_protocol_csv_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), hl_protocol_csv_dir))
         os.makedirs(self.hl_token_csv_dir, exist_ok=True)
         os.makedirs(self.hl_protocol_csv_dir, exist_ok=True)
+
+    def _ingest_token_payload(self, token_payload: Tokens):
+        pass
+
+    def _ingest_protocol_payload(self, protocol_payload: HlProtocolMetrics):
+        pass
