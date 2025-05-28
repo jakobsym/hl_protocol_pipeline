@@ -32,6 +32,11 @@ loggers:
     handlers: [console, file]
     propagate: False
   
+  load:
+    level: INFO
+    handlers: [console, file]
+    propagate: False
+  
   main:
     level: INFO
     handlers: [console, file]
