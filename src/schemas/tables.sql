@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS protocols (
 CREATE TABLE IF NOT EXISTS protocol_holdings (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     protocol_id INTEGER REFERENCES protocols(id),
-    token_address TEXT REFERENCES tokens(token_address),
+    token_id TEXT REFERENCES tokens(id),
     holdings_usd DECIMAL NOT NULL,
     timestamp TIMESTAMP WITH TIME ZONE NOT NULL
 );
@@ -26,4 +26,6 @@ CREATE TABLE IF NOT EXISTS protocol_holdings (
 DROP INDEX IF EXISTS idx_protocol_holdings_token;
 CREATE INDEX idx_protocol_holdings_token ON protocol_holdings(token_address);
 
+DROP INDEX IF EXISTS idx_token_holders;
+CREATE INDEX idx_token_holders ON tokens(holders);
 
