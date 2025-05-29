@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS protocols (
 CREATE TABLE IF NOT EXISTS protocol_holdings (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     protocol_id INTEGER REFERENCES protocols(id),
-    token_id TEXT REFERENCES tokens(id),
+    token_id INTEGER REFERENCES tokens(id),
     holdings_usd DECIMAL NOT NULL,
     timestamp TIMESTAMP WITH TIME ZONE NOT NULL
 );
