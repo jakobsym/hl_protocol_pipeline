@@ -28,6 +28,7 @@ async def main():
     json_transformer = JsonTokenTransformer()
     dl_json_transformer = DefiLlamaJsonTransformer()
     timescale_loader = await TimescaleLoader().establish_timescale_connection_pool()
+    await timescale_loader.create_tables()
     
     
     """

@@ -15,9 +15,10 @@ class TimescaleLoader:
         self.pool = None
 
     # TODO: Retry logic?
-    async def establish_timescale_connection_pool(self) -> asyncpg.Pool:
+    async def establish_timescale_connection_pool(self):
         try:
             self.pool = await asyncpg.create_pool(self.connection_str)
+            logger.info("DB Connection pool established.")
             return self
         except Exception as e:
             logger.error(f"unable to establish timescale connection: {str(e)}")
@@ -27,18 +28,18 @@ class TimescaleLoader:
         try:
             if self.pool:
                 await self.pool.close()
+                logger.info("DB Connection is now closed.")
         except Exception as e:
             logger.error(f"unable to close timescale connection: {str(e)}")
             raise
 
     
-    async def create_tables(self, connection_pool: asyncpg.Pool):
+    async def create_tables(self):
         try:
-            async with connection_pool.acquire() as conn:
-                with open("../schemas/tables.sql", 'r') as file:
+            async with self.pool.acquire() as conn:
+                with open("./src/schemas/tables.sql", 'r') as file:
                     sql_contents = file.read()
                 await conn.execute(sql_contents)
-            await connection_pool.close()
             logger.info("table(s) successfully loaded from file")
         except Exception as e:
             logger.error(f"unable to read sql file: {str(e)}")
