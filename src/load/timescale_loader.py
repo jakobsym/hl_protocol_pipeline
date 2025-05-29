@@ -14,17 +14,24 @@ class TimescaleLoader:
         self.connection_str = connection_str
         self.pool = None
 
-    # TODO: Retry logic?
-    async def establish_timescale_connection_pool(self):
-        try:
-            self.pool = await asyncpg.create_pool(self.connection_str)
-            logger.info("DB Connection pool established.")
-            return self
-        except Exception as e:
-            logger.error(f"unable to establish timescale connection: {str(e)}")
-            raise
-    
-    async def _close_connection(self):
+    async def establish_timescale_connection_pool(self, max_retries:int = 3, retry_delay:float = 5):
+        attempts = 0
+        while attempts < max_retries:
+            try:
+                self.pool = await asyncpg.create_pool(self.connection_str, command_timeout=60)
+                logger.info("DB Connection pool established.")
+                return self
+            except Exception as e:
+                attempt +=1
+                if attempt > max_retries:
+                    logger.error(f"max retries reached unable to establish timescale connection: {str(e)}")
+                    raise
+                else:
+                    logger.info(f"Retrying in {retry_delay} seconds..")
+                    asyncio.sleep(delay=retry_delay)
+
+        
+    async def close_connection(self):
         try:
             if self.pool:
                 await self.pool.close()

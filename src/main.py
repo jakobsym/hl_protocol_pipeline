@@ -27,8 +27,12 @@ async def main():
     dl_api_extractor = DefiLlamaAPIExtractor()
     json_transformer = JsonTokenTransformer()
     dl_json_transformer = DefiLlamaJsonTransformer()
-    timescale_loader = await TimescaleLoader().establish_timescale_connection_pool()
-    await timescale_loader.create_tables()
+    timescale_loader = TimescaleLoader()
+
+    try:
+        await timescale_loader.establish_timescale_connection_pool()
+    finally:
+        await timescale_loader.close_connection()
     
     
     """
