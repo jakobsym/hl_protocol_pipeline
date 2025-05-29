@@ -25,9 +25,7 @@ CREATE TABLE IF NOT EXISTS protocol_holdings (
     timestamp TIMESTAMP WITH TIME ZONE NOT NULL
 );
 
-DROP INDEX IF EXISTS idx_protocol_holdings_token;
-CREATE INDEX idx_protocol_holdings_token ON protocol_holdings(token_address);
 
-DROP INDEX IF EXISTS idx_token_holders;
-CREATE INDEX idx_token_holders ON tokens(holders);
+CREATE INDEX IF NOT EXISTS idx_protocol_holdings_token ON protocol_holdings(token_address);
+CREATE INDEX IF NOT EXISTS idx_token_holders ON tokens(holders);
 
