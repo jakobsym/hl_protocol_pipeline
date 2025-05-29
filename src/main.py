@@ -31,6 +31,7 @@ async def main():
 
     try:
         await timescale_loader.establish_timescale_connection_pool()
+        await timescale_loader.create_tables()
     finally:
         await timescale_loader.close_connection()
     
