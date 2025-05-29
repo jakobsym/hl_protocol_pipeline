@@ -17,8 +17,11 @@ CREATE TABLE protocols IF NOT EXISITS (
 
 CREATE TABLE protocol_holdings IF NOT EXISITS (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    protocol_id UNIQUE INTEGER REFERENCES protocols(id),
-    token_address UNIQUE TEXT REFERENCES tokens(token_address),
+    protocol_id INTEGER REFERENCES protocols(id),
+    token_address TEXT REFERENCES tokens(token_address),
     holdings_usd DECIMAL NOT NULL,
     timestamp TIMESTAMP WITH TIME ZONE NOT NULL
 );
+
+
+CREATE INDEX idx_protocol_holdings_token ON protocol_holdings(token_address);
