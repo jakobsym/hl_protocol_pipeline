@@ -52,6 +52,20 @@ class TimescaleLoader:
             logger.error(f"unable to read sql file: {str(e)}")
             raise
 
-    async def load_into_timescale(self, token_payload: Tokens, protocol_payload: HlProtocolMetrics):
+    async def _insert_tokens(self, tokens: Tokens):
         pass
+
+    async def _insert_protocol_metrics(self, protocol_metrics: HlProtocolMetrics):
+        pass
+
+
+    async def load_into_timescale(self, token_payload: Tokens, protocol_payload: HlProtocolMetrics):
+        try:
+            await self._insert_tokens(token_payload)
+            await self._insert_protocol_metrics(protocol_payload)
+        except Exception as e:
+            logger.error(f"error loading data")
+            
+        
+        
     

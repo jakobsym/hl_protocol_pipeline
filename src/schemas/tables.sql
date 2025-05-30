@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS protocols (
     total_liq_usd_timestamp TIMESTAMP WITH TIME ZONE NOT NULL
 );
 
+-- is this even relevant to store?
 -- To view all holdings for a given protocol you simply
 -- join based on the ids for a specific protocol
 CREATE TABLE IF NOT EXISTS protocol_holdings (
