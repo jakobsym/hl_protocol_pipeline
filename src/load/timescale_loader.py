@@ -8,7 +8,6 @@ from schemas.schemas import HlProtocolMetrics, Tokens
 load_dotenv()
 logger = logging.getLogger("load")
 
-# TODO: Seperate some of these methods
 class TimescaleLoader:
     def __init__(self, connection_str: str = os.getenv("TIMESCALE_CONNECTION_STRING")):
         self.connection_str = connection_str
@@ -87,25 +86,39 @@ class TimescaleLoader:
             logger.error(f"error executing token transaction: {str(e)}")
             raise
         
-
-    # TODO: Finish implementating, currently placeholder
     async def _insert_protocol_metrics(self, protocol_metrics: HlProtocolMetrics):
+
         try:
             async with self.pool.acquire() as conn:
-                await conn.execute('''
-                    INSERT INTO protocols VALUES($1 $2);
-                ''',
-                protocol_metrics.current_tvl,
-                )
+                async with conn.transaction():
+                    for protocol, metrics in protocol_metrics.items():
+                        p_id = await conn.fetchval('''
+                            INSERT INTO protocols (protocol_name) VALUES($1) ON CONFLICT (protocol_name) DO NOTHING
+                            RETURNING ID;
+                        ''',
+                        protocol)
+
+                        if p_id is None:
+                            id = await conn.fetchval('''
+                                SELECT id FROM protocols WHERE protocol_name = $1;
+                            ''', protocol)
+                            await conn.execute('''
+                                INSERT INTO protocol_metrics (protocol_id, current_tvl, total_liq_usd, recorded_at)
+                                VALUES ($1, $2, $3, $4)
+                            ''', id, metrics.current_tvl, metrics.total_liq_usd, metrics.tvl_timestamp)
+                        else:
+                            await conn.execute('''
+                                INSERT INTO protocol_metrics (protocol_id, current_tvl, total_liq_usd, recorded_at)
+                                VALUES ($1, $2, $3, $4)
+                            ''', p_id, metrics.current_tvl, metrics.total_liq_usd, metrics.tvl_timestamp)
         except Exception as e:
             logger.info(f"error inserting into protocols table: {str(e)}")
             raise
 
-            #  protocol_payload: HlProtocolMetrics
-    async def load_into_timescale(self, token_payload: Tokens):
+    async def load_into_timescale(self, token_payload: Tokens, protocol_payload: HlProtocolMetrics):
         try:
             await self._insert_tokens(token_payload)
-            #await self._insert_protocol_metrics(protocol_payload)
+            await self._insert_protocol_metrics(protocol_payload)
             logger.info(f"token and protocol metric(s) payload successfully loaded into Timescale.")
         except Exception as e:
             logger.error(f"error loading payloa(s)) into timescale: {str(e)}")

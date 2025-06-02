@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS token_metrics(
 CREATE TABLE IF NOT EXISTS protocols (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     protocol_name TEXT UNIQUE NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS protocol_metrics(
@@ -33,8 +33,5 @@ CREATE TABLE IF NOT EXISTS protocol_metrics(
 --SELECT create_protocol_hypertable('protocol_metrics', 'recorded_at')
 --SELECT create_token_hypertable('token_holder_metrics', 'recorded_at')
 
--- create views
-
--- create indexes
 CREATE INDEX IF NOT EXISTS idx_tokens_id ON tokens(id);
-CREATE INDEX IF NOT EXISTS idc_token_metrics_holders ON token_metrics(holders);
+CREATE INDEX IF NOT EXISTS idx_token_metrics_holders ON token_metrics(holders);
