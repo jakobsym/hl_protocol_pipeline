@@ -2,31 +2,38 @@ CREATE TABLE IF NOT EXISTS tokens (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     token_address TEXT UNIQUE NOT NULL,
     token_symbol TEXT,
+    supply BIGINT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS token_holder_metrics(
+    token_id INTEGER REFERENCES tokens(id),
     holders INTEGER,
-    supply BIGINT
+    recorded_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    PRIMARY KEY(token_id, recorded_at)
 );
 
 CREATE TABLE IF NOT EXISTS protocols (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     protocol_name TEXT UNIQUE NOT NULL,
-    current_tvl DECIMAL,
-    current_tvl_timestamp TIMESTAMP WITH TIME ZONE NOT NULL,
-    total_liq_usd DECIMAL,
-    total_liq_usd_timestamp TIMESTAMP WITH TIME ZONE NOT NULL
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL
 );
 
--- is this even relevant to store?
--- To view all holdings for a given protocol you simply
--- join based on the ids for a specific protocol
-CREATE TABLE IF NOT EXISTS protocol_holdings (
-    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS protocol_metrics(
     protocol_id INTEGER REFERENCES protocols(id),
-    token_id INTEGER REFERENCES tokens(id),
-    holdings_usd DECIMAL NOT NULL,
-    timestamp TIMESTAMP WITH TIME ZONE NOT NULL
+    current_tvl DECIMAL,
+    total_liq_usd DECIMAL,
+    recorded_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    PRIMARY KEY(protocol_id, recorded_at)
 );
 
 
-CREATE INDEX IF NOT EXISTS idx_protocol_holdings_token ON protocol_holdings(token_address);
-CREATE INDEX IF NOT EXISTS idx_token_holders ON tokens(holders);
+-- create hypertable (not needed yet)
+--SELECT create_protocol_hypertable('protocol_metrics', 'recorded_at')
+--SELECT create_token_hypertable('token_holder_metrics', 'recorded_at')
+
+-- create views
+
+-- create indexes
+
 

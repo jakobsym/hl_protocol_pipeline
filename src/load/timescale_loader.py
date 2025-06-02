@@ -89,12 +89,11 @@ class TimescaleLoader:
             logger.info(f"token and metric(s) payload successfully loaded into Timescale.")
         except Exception as e:
             logger.error(f"error loading payload into timescale: {str(e)}")
-            
-        
+                   
     
-    async def __enter__(self):
+    async def __aenter__(self):
         await self.establish_timescale_connection_pool()
         return self
     
-    async def __exit__(self, type, value, traceback):
+    async def __aexit__(self, type, value, traceback):
         await self.close_connection()
