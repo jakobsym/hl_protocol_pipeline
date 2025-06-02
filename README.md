@@ -5,7 +5,7 @@
 ```mermaid
 flowchart TB
     %% Orchestrator
-    Airflow["Apache Airflow<br/>Orchestrator"]
+    Airflow["Orchestrator TBD"]
 
     %% Data Sources (No subgraph box)
     FinAPI1["Defi Llama API"]
