@@ -36,5 +36,5 @@ CREATE TABLE IF NOT EXISTS protocol_metrics(
 -- create views
 
 -- create indexes
-
-
+CREATE INDEX IF NOT EXISTS idx_tokens_id ON tokens(id);
+CREATE INDEX IF NOT EXISTS idc_token_metrics_holders ON token_metrics(holders);

@@ -35,7 +35,7 @@ class TimescaleLoader:
         try:
             if self.pool:
                 await self.pool.close()
-                logger.info("DB Connection is now closed.")
+                logger.info("DB Connection is now closed.\n")
         except Exception as e:
             logger.error(f"unable to close timescale connection: {str(e)}")
             raise
@@ -60,19 +60,29 @@ class TimescaleLoader:
             async with self.pool.acquire() as conn:
                 async with conn.transaction():
                     for address, token in tokens.items():
-                        res = await conn.fetchval('''
+                        token_id = await conn.fetchval('''
                             INSERT INTO tokens (token_address, token_symbol, token_name, supply) VALUES($1, $2, $3, $4)
                             ON CONFLICT (token_address) DO NOTHING
                             RETURNING id;
                         ''',
                         address, token.symbol, token.name, token.supply
                         )
-
-                        await conn.execute('''
-                            INSERT INTO token_metrics (token_id, holders, recorded_at) VALUES($1, $2, $3);
-                        ''',
-                        res, token.holders,token_payload.timestamp
-                        )
+                        # TODO: This looks so ugly
+                        if token_id is None:
+                            id = await conn.fetchval('''
+                                SELECT id FROM tokens WHERE token_address = $1;
+                            ''', address)
+                            await conn.execute('''
+                                INSERT INTO token_metrics (token_id, holders, recorded_at) VALUES($1, $2, $3);
+                            ''',
+                            id, token.holders,token_payload.timestamp
+                            )
+                        else:
+                            await conn.execute('''
+                                INSERT INTO token_metrics (token_id, holders, recorded_at) VALUES($1, $2, $3);
+                            ''',
+                            token_id, token.holders,token_payload.timestamp
+                            )
         except Exception as e:
             logger.error(f"error executing token transaction: {str(e)}")
             raise
