@@ -10,7 +10,6 @@ class Token(BaseModel):
 
 class Tokens(BaseModel):
     timestamp: datetime
-    batch_id: int
     tokens: dict[str, Token]
     @field_validator('timestamp')
     @classmethod

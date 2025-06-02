@@ -3,7 +3,6 @@ import os
 import json
 import logging
 import time
-import itertools
 from datetime import datetime
 from schemas.schemas import HlProtocolMetrics, Tokens
 
@@ -14,8 +13,6 @@ class JsonTokenTransformer:
 
     def __init__(self, transformed_data_dir: str = "../../data/hyperscan_transformed_data"):
         self.transformed_data_dir = transformed_data_dir
-        self.id_iter = itertools.count()
-        self.id = next(self.id_iter)
 
         # create transformed data directory
         self.transformed_data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), transformed_data_dir))
@@ -38,9 +35,8 @@ class JsonTokenTransformer:
                     }
                 
             # validate transformed_tokens
-            self.id = next(self.id_iter)
             timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-            validated_tokens = Tokens(tokens=transformed_tokens, timestamp=timestamp, batch_id=self.id)
+            validated_tokens = Tokens(tokens=transformed_tokens, timestamp=timestamp)
             
             filename = f"transformed_token_metrics_{timestamp}.json"
             self._store_data(filename, transformed_tokens)

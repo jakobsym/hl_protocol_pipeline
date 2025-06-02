@@ -61,7 +61,7 @@ async def main():
     # load processed data into TimescaleDB
     async with TimescaleLoader() as timescale_loader:
         await timescale_loader.create_tables()
-        #await timescale_loader.load_into_timescale()
+        await timescale_loader.load_into_timescale(token_payload=transformed_tokens)
 
     elapsed_time = (time.time() - start_time) * 1000
     logger.info("Completed batch process in %.2fms", elapsed_time)

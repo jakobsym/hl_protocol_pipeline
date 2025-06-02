@@ -58,13 +58,23 @@ class TimescaleLoader:
             
         try:
             async with self.pool.acquire() as conn:
-                await conn.execute('''
-                    INSERT INTO tokens VALUES($1 $2);
-                ''',
-                token_payload.tokens
-                )
+                async with conn.transaction():
+                    for address, token in tokens.items():
+                        res = await conn.fetchval('''
+                            INSERT INTO tokens (token_address, token_symbol, token_name, supply) VALUES($1, $2, $3, $4)
+                            ON CONFLICT (token_address) DO NOTHING
+                            RETURNING id;
+                        ''',
+                        address, token.symbol, token.name, token.supply
+                        )
+
+                        await conn.execute('''
+                            INSERT INTO token_metrics (token_id, holders, recorded_at) VALUES($1, $2, $3);
+                        ''',
+                        res, token.holders,token_payload.timestamp
+                        )
         except Exception as e:
-            logger.info(f"error inserting into tokens table: {str(e)}")
+            logger.error(f"error executing token transaction: {str(e)}")
             raise
         
 
@@ -81,14 +91,14 @@ class TimescaleLoader:
             logger.info(f"error inserting into protocols table: {str(e)}")
             raise
 
-
-    async def load_into_timescale(self, token_payload: Tokens, protocol_payload: HlProtocolMetrics):
+            #  protocol_payload: HlProtocolMetrics
+    async def load_into_timescale(self, token_payload: Tokens):
         try:
             await self._insert_tokens(token_payload)
-            await self._insert_protocol_metrics(protocol_payload)
-            logger.info(f"token and metric(s) payload successfully loaded into Timescale.")
+            #await self._insert_protocol_metrics(protocol_payload)
+            logger.info(f"token and protocol metric(s) payload successfully loaded into Timescale.")
         except Exception as e:
-            logger.error(f"error loading payload into timescale: {str(e)}")
+            logger.error(f"error loading payloa(s)) into timescale: {str(e)}")
                    
     
     async def __aenter__(self):

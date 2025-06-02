@@ -2,11 +2,12 @@ CREATE TABLE IF NOT EXISTS tokens (
     id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     token_address TEXT UNIQUE NOT NULL,
     token_symbol TEXT,
-    supply BIGINT,
+    token_name TEXT,
+    supply NUMERIC,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS token_holder_metrics(
+CREATE TABLE IF NOT EXISTS token_metrics(
     token_id INTEGER REFERENCES tokens(id),
     holders INTEGER,
     recorded_at TIMESTAMP WITH TIME ZONE NOT NULL,
