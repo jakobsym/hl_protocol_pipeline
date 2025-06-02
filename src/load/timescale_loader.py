@@ -51,21 +51,50 @@ class TimescaleLoader:
         except Exception as e:
             logger.error(f"unable to read sql file: {str(e)}")
             raise
+    
+    # TODO: Finish implementating, currently placeholder
+    async def _insert_tokens(self, token_payload: Tokens):
+        tokens = token_payload.tokens
+            
+        try:
+            async with self.pool.acquire() as conn:
+                await conn.execute('''
+                    INSERT INTO tokens VALUES($1 $2);
+                ''',
+                token_payload.tokens
+                )
+        except Exception as e:
+            logger.info(f"error inserting into tokens table: {str(e)}")
+            raise
+        
 
-    async def _insert_tokens(self, tokens: Tokens):
-        pass
-
+    # TODO: Finish implementating, currently placeholder
     async def _insert_protocol_metrics(self, protocol_metrics: HlProtocolMetrics):
-        pass
+        try:
+            async with self.pool.acquire() as conn:
+                await conn.execute('''
+                    INSERT INTO protocols VALUES($1 $2);
+                ''',
+                protocol_metrics.current_tvl,
+                )
+        except Exception as e:
+            logger.info(f"error inserting into protocols table: {str(e)}")
+            raise
 
 
     async def load_into_timescale(self, token_payload: Tokens, protocol_payload: HlProtocolMetrics):
         try:
             await self._insert_tokens(token_payload)
             await self._insert_protocol_metrics(protocol_payload)
+            logger.info(f"token and metric(s) payload successfully loaded into Timescale.")
         except Exception as e:
-            logger.error(f"error loading data")
+            logger.error(f"error loading payload into timescale: {str(e)}")
             
         
-        
     
+    async def __enter__(self):
+        await self.establish_timescale_connection_pool()
+        return self
+    
+    async def __exit__(self, type, value, traceback):
+        await self.close_connection()
