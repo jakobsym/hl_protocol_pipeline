@@ -38,8 +38,8 @@ class JsonTokenTransformer:
             timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
             validated_tokens = Tokens(tokens=transformed_tokens, timestamp=timestamp)
             
-            filename = f"transformed_token_metrics_{timestamp}.json"
-            self._store_data(filename, transformed_tokens)
+            #filename = f"transformed_token_metrics_{timestamp}.json"
+            #self._store_data(filename, transformed_tokens)
 
             return validated_tokens
         except Exception as e:
@@ -106,8 +106,8 @@ class DefiLlamaJsonTransformer:
             metrics = HlProtocolMetrics(**transformed_metrics)
 
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = f"{protocol_name}_transformed_metrics_{timestamp}.json"
-            self._store_data(filename, transformed_metrics)
+            #filename = f"{protocol_name}_transformed_metrics_{timestamp}.json"
+            #self._store_data(filename, transformed_metrics)
             return metrics
         except Exception as e:
             logger.error("processing failed for %s: %s", protocol_name, str(e), exc_info=True)

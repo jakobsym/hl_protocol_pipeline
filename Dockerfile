@@ -1,10 +1,21 @@
-FROM python:3-alpine
+FROM python:3.9-slim
 
-WORKDIR /hl_protocol_pipeline
+# force output to stdout/stderr
+# prevent .pyc files from being created
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
 
-COPY ./requirements.txt ./
+WORKDIR /app
+
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# copy rest of code
 COPY . .
 
-CMD ["python", "src/main.py"]
+RUN useradd -m appuser && \
+    chown -R appuser:appuser /app
+
+USER appuser
+
+CMD ["python", "-m", "src/main.py"]
