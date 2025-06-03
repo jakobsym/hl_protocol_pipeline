@@ -7,7 +7,7 @@ pipeline {
     }
     
     triggers {
-        cron('H 2 * * *')
+        cron('H 2 * * *') // runs daily at 2am
     }
     
     stages {
@@ -29,13 +29,20 @@ pipeline {
         
         stage('Run ETL Job') {
             steps {
-                script {
-                    echo 'Running ETL job...'
-                    sh 'docker run -d --name hl_pipeline \
-                    -e AZURE_CONNECTION_STRING=${AZURE_CONNECTION_STRING} \
-                    -e TIMESCALE_CONNECTION_STRING=${TIMESCALE_CONNECTION_STRING} \
-                    hl_protocol_pipeline:latest'
-                    // sh 'docker run --rm hl_protocol_pipeline:latest'
+                withCredentials([
+                    string(credentialsId: 'AZURE_CONNECTION_STRING', variable: 'AZURE_CONNECTION_STRING'),
+                    string(credentialsId: 'TIMESCALE_CONNECTION_STRING', variable: 'TIMESCALE_CONNECTION_STRING'),
+                ]) {
+                    script {
+                        echo 'Running ETL job with credentials...'
+                        sh '''
+                            docker run --rm \
+                                -e AZURE_CONNECTION_STRING="${AZURE_CONNECTION_STRING}" \
+                                -e TIMESCALE_CONNECTION_STRING="${TIMESCALE_CONNECTION_STRING}" \
+                                hl_protocol_pipeline:latest \
+                                python src/main.py
+                        '''
+                    }
                 }
             }
         }
@@ -44,12 +51,12 @@ pipeline {
     post {
         always {
             echo 'Pipeline completed'
-            // clean up
+            // clean up if needed
             sh 'docker image prune -f || true'
         }
         failure {
             echo 'Pipeline failed!'
-            // notification logic
+            //notification logic
         }
         success {
             echo 'Pipeline succeeded!'
