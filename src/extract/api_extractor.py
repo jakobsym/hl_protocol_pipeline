@@ -13,7 +13,7 @@ class HyperscanAPIExtractor:
         self.base_url = base_url
         self.raw_data_dir = raw_data_dir
         self.session = requests.Session()
-        self.timeout = 5
+        self.timeout = 15
 
         # create raw_json dir if !exist
         self.raw_data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), raw_data_dir))
@@ -74,7 +74,7 @@ class DefiLlamaAPIExtractor:
         self.base_url = base_url
         self.raw_data_dir = raw_data_dir
         self.session = requests.Session()
-        self.timeout = 5
+        self.timeout = 15
         
         # create raw_json dir if !exist
         self.raw_data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), raw_data_dir))
