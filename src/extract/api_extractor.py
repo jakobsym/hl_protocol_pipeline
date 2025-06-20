@@ -27,7 +27,8 @@ class HyperscanAPIExtractor:
             res = self.session.get(
             url=url,
             params=params,
-            timeout=self.timeout
+            timeout=self.timeout,
+            headers={"User-Agent": "Python/requests"}
             )
 
             if res.status_code == 200:
@@ -88,7 +89,8 @@ class DefiLlamaAPIExtractor:
             res = self.session.get(
             url=url,
             params=params,
-            timeout=self.timeout
+            timeout=self.timeout,
+            headers={"User-Agent": "Python/requests"}
             )
             if res.status_code == 200:
                 data = res.json()
