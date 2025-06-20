@@ -35,7 +35,7 @@ class JsonTokenTransformer:
                     }
                 
             # validate transformed_tokens
-            timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+            timestamp = datetime.now()
             validated_tokens = Tokens(tokens=transformed_tokens, timestamp=timestamp)
             
             #filename = f"transformed_token_metrics_{timestamp}.json"
