@@ -31,13 +31,25 @@ class SupabaseLoader:
 
     async def close_supabase_connection(self):
         try:
-            if self.connection:
-                await self.connection.close()
+            if self.connection is not None:
+                self.connection.close()
                 logger.info("Supabase connection is now closed\n")
         except Exception as e:
             logger.error(f"unable to close supabase connection: {str(e)}")
             raise
-    
+
+    async def create_tables(self):
+        try:
+            with self.connection.cursor() as cursor:
+                with open("./src/schemas/tables.sql", 'r') as file:
+                    sql_contents = file.read()
+                cursor.execute(sql_contents)
+                self.connection.commit()
+            logger.info("table(s) successfully loaded from file")
+        except Exception as e:
+            logger.error(f"unable to read sql file: {str(e)}")
+            raise
+
     async def _insert_tokens(self, token_payload: Tokens):
         pass
 

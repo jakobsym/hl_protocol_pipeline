@@ -6,6 +6,7 @@ from extract.api_extractor import DefiLlamaAPIExtractor, HyperscanAPIExtractor
 from extract.blob_extractor import BlobExtractor
 from transform.transformer import DefiLlamaJsonTransformer, JsonTokenTransformer
 from load.timescale_loader import TimescaleLoader
+from load.supabase_loader import SupabaseLoader
 from utils.logging import config_logging
 
 # init logging
@@ -17,6 +18,7 @@ async def main():
     hyperliquid_dexs = ["hyperswap", "valantis", "kittenswap-finance", "laminar"]
     protocol_metrics = {}
     
+    """
     blob_extractor = BlobExtractor()
     hs_api_extractor = HyperscanAPIExtractor()
     dl_api_extractor = DefiLlamaAPIExtractor()
@@ -44,11 +46,17 @@ async def main():
             protocol_metrics[protocol] = transformed_protocol_metrics
         except Exception as e:
             logger.error("Error processing %s: %s", protocol, str(e))
-
+    """
+    
+    async with SupabaseLoader() as sb_loader:
+        await sb_loader.create_tables()
+    
+    """
     # load processed data into TimescaleDB
     async with TimescaleLoader() as timescale_loader:
         await timescale_loader.create_tables()
         await timescale_loader.load_into_timescale(token_payload=transformed_tokens, protocol_payload=protocol_metrics)
+    """
 
     elapsed_time = (time.time() - start_time) * 1000
     logger.info("Completed batch process in %.2fms", elapsed_time)
