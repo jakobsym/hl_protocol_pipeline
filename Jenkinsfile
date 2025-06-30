@@ -31,14 +31,14 @@ pipeline {
             steps {
                 withCredentials([
                     string(credentialsId: 'AZURE_CONNECTION_STRING', variable: 'AZURE_CONNECTION_STRING'),
-                    string(credentialsId: 'TIMESCALE_CONNECTION_STRING', variable: 'TIMESCALE_CONNECTION_STRING'),
+                    string(credentialsId: 'SUPABASE_CONNECTION_STRING', variable: 'SUPABASE_CONNECTION_STRING'),
                 ]) {
                     script {
                         echo 'Running ETL job with credentials...'
                         sh '''
                             docker run --rm \
                                 -e AZURE_CONNECTION_STRING="${AZURE_CONNECTION_STRING}" \
-                                -e TIMESCALE_CONNECTION_STRING="${TIMESCALE_CONNECTION_STRING}" \
+                                -e SUPABASE_CONNECTION_STRING="${SUPABASE_CONNECTION_STRING}" \
                                 hl_protocol_pipeline:latest \
                                 python src/main.py
                         '''
