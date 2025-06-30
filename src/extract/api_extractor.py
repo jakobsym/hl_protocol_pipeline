@@ -9,7 +9,7 @@ from datetime import datetime
 logger = logging.getLogger("extract")
 
 class HyperscanAPIExtractor:
-    def __init__(self, base_url: str = "https://hyperscan.gas.zip/api/v2", raw_data_dir: str = "../../data/hyperscan_raw_json"):
+    def __init__(self, base_url: str = "https://www.hyperscan.com/api/v2", raw_data_dir: str = "../../data/hyperscan_raw_json"):
         self.base_url = base_url
         self.raw_data_dir = raw_data_dir
         self.session = requests.Session()

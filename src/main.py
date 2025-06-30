@@ -18,7 +18,6 @@ async def main():
     hyperliquid_dexs = ["hyperswap", "valantis", "kittenswap-finance", "laminar"]
     protocol_metrics = {}
     
-    """
     blob_extractor = BlobExtractor()
     hs_api_extractor = HyperscanAPIExtractor()
     dl_api_extractor = DefiLlamaAPIExtractor()
@@ -46,10 +45,11 @@ async def main():
             protocol_metrics[protocol] = transformed_protocol_metrics
         except Exception as e:
             logger.error("Error processing %s: %s", protocol, str(e))
-    """
     
+
     async with SupabaseLoader() as sb_loader:
         await sb_loader.create_tables()
+        await sb_loader.load_into_supabase(token_payload=transformed_tokens, protocol_payload=protocol_metrics)
     
     """
     # load processed data into TimescaleDB
