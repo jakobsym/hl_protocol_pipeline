@@ -47,17 +47,10 @@ async def main():
             logger.error("Error processing %s: %s", protocol, str(e))
     
 
-    async with SupabaseLoader() as sb_loader:
-        await sb_loader.create_tables()
-        await sb_loader.load_into_supabase(token_payload=transformed_tokens, protocol_payload=protocol_metrics)
+    with SupabaseLoader() as sb_loader:
+        sb_loader.create_tables()
+        sb_loader.load_into_supabase(token_payload=transformed_tokens, protocol_payload=protocol_metrics)
     
-    """
-    # load processed data into TimescaleDB
-    async with TimescaleLoader() as timescale_loader:
-        await timescale_loader.create_tables()
-        await timescale_loader.load_into_timescale(token_payload=transformed_tokens, protocol_payload=protocol_metrics)
-    """
-
     elapsed_time = (time.time() - start_time) * 1000
     logger.info("Completed batch process in %.2fms", elapsed_time)
     

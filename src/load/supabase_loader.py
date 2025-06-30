@@ -55,8 +55,8 @@ class SupabaseLoader:
         tokens = token_payload.tokens
 
         try:
+            self.connection.autocommit = False
             with self.connection.cursor() as curs:
-                self.connection.autocommit = False
                 try:
                     for address, token in tokens.items():
                         curs.execute('''
@@ -65,8 +65,7 @@ class SupabaseLoader:
                                 ON CONFLICT (token_address) DO NOTHING
                                 RETURNING id;
                             ''',
-                            (address, token.symbol, token.name, token.supply)
-                        )
+                            (address, token.symbol, token.name, token.supply))
                         token_id = curs.fetchone()[0] if curs.rowcount > 0 else None
 
                         if token_id is None:
@@ -78,15 +77,15 @@ class SupabaseLoader:
                                 INSERT INTO token_metrics (token_id, holders, recorded_at) 
                                 VALUES(%s, %s, %s);
                             ''',
-                            (id, token.holders, token_payload.timestamp)
-                            )
+                            (id, token.holders, token_payload.timestamp))
                         else:
                             curs.execute('''
                                 INSERT INTO token_metrics (token_id, holders, recorded_at) 
                                 VALUES(%s, %s, %s);
                             ''',
-                            (token_id, token.holders, token_payload.timestamp)
-                            )
+                            (token_id, token.holders, token_payload.timestamp))
+                    self.connection.commit()
+                    logger.info(f"successfully inserted token metrics")
                 except Exception as e:
                     self.connection.rollback() # rollback commit on error
                     raise
@@ -94,6 +93,7 @@ class SupabaseLoader:
             logger.error(f"error executing token transaction: {str(e)}")
             raise
         finally:
+            curs.close()
             self.connection.autocommit = True
 
 
@@ -101,33 +101,32 @@ class SupabaseLoader:
 
     def _insert_protocol_metrics(self, protocol_metrics: HlProtocolMetrics):
         try:
+            self.connection.autocommit = False
             with self.connection.cursor() as curs:
-                self.connection.autocommit = False
                 try:
                     for protocol, metrics in protocol_metrics.items():
                         curs.execute('''
-                            INSERT INTO protocols (protocol_name) VALUES($1) ON CONFLICT (protocol_name) DO NOTHING
+                            INSERT INTO protocols (protocol_name) VALUES(%s) ON CONFLICT (protocol_name) DO NOTHING
                             RETURNING ID;
-                        ''', (protocol)
-                        )
+                        ''', (protocol,))
                         p_id = curs.fetchone()[0] if curs.rowcount > 0 else None
 
                         if p_id is None:
                             curs.execute('''
-                                SELECT id FROM protocols WHERE protocol_name = $1;
-                            ''', (protocol)
-                            )
+                                SELECT id FROM protocols WHERE protocol_name = %s;
+                            ''', (protocol))
                             id = curs.fetchone()[0]
                             curs.execute('''
                                 INSERT INTO protocol_metrics (protocol_id, current_tvl, total_liq_usd, recorded_at)
-                                VALUES ($1, $2, $3, $4)
-                            ''', (id, metrics.current_tvl, metrics.total_liq_usd, metrics.tvl_timestamp)
-                            )
+                                VALUES (%s, %s, %s, %s)
+                            ''', (id, metrics.current_tvl, metrics.total_liq_usd, metrics.tvl_timestamp))
                         else:
                             curs.execute('''
                                 INSERT INTO protocol_metrics (protocol_id, current_tvl, total_liq_usd, recorded_at)
-                                VALUES ($1, $2, $3, $4)
+                                VALUES (%s, %s, %s, %s)
                             ''', (p_id, metrics.current_tvl, metrics.total_liq_usd, metrics.tvl_timestamp))
+                    self.connection.commit()
+                    logger.info(f"successfully inserted protocol metrics")
                 except Exception as e:
                     self.connection.rollback()
                     raise       
@@ -135,6 +134,7 @@ class SupabaseLoader:
             logger.error(f"error executing protocol transaction: {str(e)}")
             raise
         finally:
+            curs.close()
             self.connection.autocommit = True
 
 
@@ -150,4 +150,3 @@ class SupabaseLoader:
         
     def __exit__(self, type, value, traceback):
         self.close_supabase_connection()
-        
