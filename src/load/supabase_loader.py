@@ -21,8 +21,8 @@ class SupabaseLoader:
                 logger.info("Supabase connection established")
                 return self
             except Exception as e:
-                attempt += 1
-                if attempt > max_retries:
+                attempts += 1
+                if attempts > max_retries:
                     logger.error(f"max retries reached unable to establish timescale connection: {str(e)}")
                     raise
                 else:
