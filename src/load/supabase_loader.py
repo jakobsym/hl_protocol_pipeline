@@ -141,7 +141,7 @@ class SupabaseLoader:
     def load_into_supabase(self, token_payload:Tokens, protocol_payload: HlProtocolMetrics):
         try:
             self._insert_tokens(token_payload=token_payload)
-            self._insert_protocol_metrics(protocol_metrics=protocol_payload)
+            #self._insert_protocol_metrics(protocol_metrics=protocol_payload)
         except Exception as e:
             logger.error(f"error loading payload(s) into supabase: {str(e)}")
         
