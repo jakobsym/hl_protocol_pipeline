@@ -138,7 +138,7 @@ class SupabaseLoader:
             self.connection.autocommit = True
 
 
-    def load_into_supabase(self, token_payload:Tokens, protocol_payload: HlProtocolMetrics):
+    def load_into_supabase(self, token_payload:Tokens):
         try:
             self._insert_tokens(token_payload=token_payload)
             #self._insert_protocol_metrics(protocol_metrics=protocol_payload)

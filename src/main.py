@@ -16,7 +16,7 @@ logger = logging.getLogger("main")
 async def main():
     start_time = time.time()
     hyperliquid_dexs = ["hyperswap", "valantis", "kittenswap-finance", "laminar"]
-    protocol_metrics = {}
+    #protocol_metrics = {}
     
     blob_extractor = BlobExtractor()
     hs_api_extractor = HyperscanAPIExtractor()
@@ -32,6 +32,7 @@ async def main():
     #token_data = merge_dict(token_api_data, token_blob_data)
     transformed_tokens = json_transformer.transform_token_payload(token_api_data)
 
+    """
     # TODO: can this be a function?
     for protocol in hyperliquid_dexs:
         try:
@@ -45,11 +46,11 @@ async def main():
             protocol_metrics[protocol] = transformed_protocol_metrics
         except Exception as e:
             logger.error("Error processing %s: %s", protocol, str(e))
-    
+    """
 
     with SupabaseLoader() as sb_loader:
         sb_loader.create_tables()
-        sb_loader.load_into_supabase(token_payload=transformed_tokens, protocol_payload=protocol_metrics)
+        sb_loader.load_into_supabase(token_payload=transformed_tokens)
     
     elapsed_time = (time.time() - start_time) * 1000
     logger.info("Completed batch process in %.2fms", elapsed_time)
